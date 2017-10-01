@@ -1,4 +1,5 @@
-import org.lwjgl.LWJGLException
+package core.engine
+
 import org.lwjgl.opengl.*
 
 object DisplayManager {
