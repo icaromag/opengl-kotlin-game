@@ -11,15 +11,13 @@ fun main(args: Array<String>) {
 
 
     val rawModel = loader.loadToVAO(floatArrayOf(
-            // left bottom triangle
+            // rectangle vertices counterclockwise
+            // v0, v1, v2, v3
             -.5F, .5F, 0F,
             -.5F, -.5F, 0F,
             .5F, -.5F, 0F,
-            // right top triangle
-            .5F, -.5F, 0F,
-            .5F, .5F, 0F,
-            -.5F, .5F, 0F
-    ))
+            .5F, .5F, 0F
+    ), intArrayOf(0, 1, 3, 3, 1, 2))
 
     do {
         renderer.prepare()

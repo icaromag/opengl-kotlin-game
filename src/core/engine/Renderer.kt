@@ -15,7 +15,7 @@ class Renderer {
     fun render(rawModel: RawModel) {
         GL30.glBindVertexArray(rawModel.vaoID)
         GL20.glEnableVertexAttribArray(0)
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, rawModel.vertexCount)
+        GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
         GL30.glBindVertexArray(0)
     }
 }
