@@ -2,12 +2,14 @@ import core.engine.DisplayManager
 import core.engine.Loader
 import core.engine.Renderer
 import org.lwjgl.opengl.Display
+import shaders.StaticShader
 
 fun main(args: Array<String>) {
     DisplayManager.create("ICG Loot Simulator")
 
     val loader = Loader()
     val renderer = Renderer()
+    val shader = StaticShader()
 
 
     val rawModel = loader.loadToVAO(floatArrayOf(
@@ -21,10 +23,13 @@ fun main(args: Array<String>) {
 
     do {
         renderer.prepare()
+        shader.start()
         renderer.render(rawModel)
+        shader.stop()
         DisplayManager.update()
     } while (!Display.isCloseRequested())
 
+    shader.cleanUp()
     loader.clean()
     DisplayManager.close()
 }
