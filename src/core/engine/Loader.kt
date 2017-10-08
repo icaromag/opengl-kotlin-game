@@ -6,12 +6,15 @@ import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL15
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
+import org.newdawn.slick.opengl.TextureLoader
+import java.io.FileInputStream
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 class Loader {
     private val vaos: ArrayList<Int> = arrayListOf()
     private val vbos: ArrayList<Int> = arrayListOf()
+    private val textures: ArrayList<Int> = arrayListOf()
 
     fun loadToVAO(positions: FloatArray, indices: IntArray): RawModel {
         val vaoId = createVAO()
@@ -21,11 +24,18 @@ class Loader {
         return RawModel(vaoId, indices.size)
     }
 
+    fun loadTexture(fileName: String): Int {
+        // using slick-util to load textures
+        val texture = TextureLoader.getTexture("PNG", FileInputStream("res/$fileName.png"))
+        val textureID = texture.textureID
+        textures.add(textureID)
+        return textureID
+    }
+
     fun clean() {
-        for (vao in vaos)
-            GL30.glDeleteVertexArrays(vao)
-        for (vbo in vbos)
-            GL30.glDeleteVertexArrays(vbo)
+        vaos.forEach { GL30.glDeleteVertexArrays(it) }
+        vbos.forEach { GL15.glDeleteBuffers(it) }
+        textures.forEach { GL11.glDeleteTextures(it) }
     }
 
     private fun createVAO(): Int {

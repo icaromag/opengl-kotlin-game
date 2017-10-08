@@ -1,6 +1,7 @@
 package core.engine
 
 import models.RawModel
+import models.TexturedModel
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 import org.lwjgl.opengl.GL30
@@ -12,7 +13,8 @@ class Renderer {
         GL11.glClearColor(1F, 0F, 0F, 1F)
     }
 
-    fun render(rawModel: RawModel) {
+    fun render(texturedModel: TexturedModel) {
+        val rawModel = texturedModel.rawModel
         GL30.glBindVertexArray(rawModel.vaoID)
         GL20.glEnableVertexAttribArray(0)
         GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
