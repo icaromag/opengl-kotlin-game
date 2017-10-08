@@ -16,10 +16,11 @@ class Loader {
     private val vbos: ArrayList<Int> = arrayListOf()
     private val textures: ArrayList<Int> = arrayListOf()
 
-    fun loadToVAO(positions: FloatArray, indices: IntArray): RawModel {
+    fun loadToVAO(positions: FloatArray, textureCoords: FloatArray, indices: IntArray): RawModel {
         val vaoId = createVAO()
         bindIndicesBuffer(indices)
-        storeDataInAttributeList(0, positions)
+        storeDataInAttributeList(0, 3, positions)
+        storeDataInAttributeList(1, 2, textureCoords)
         unbindVAO()
         return RawModel(vaoId, indices.size)
     }
@@ -47,7 +48,7 @@ class Loader {
         return vaoID
     }
 
-    private fun storeDataInAttributeList(attributeNumber: Int, data: FloatArray) {
+    private fun storeDataInAttributeList(attributeNumber: Int, coordinateSize: Int, data: FloatArray) {
         val vboID = GL15.glGenBuffers()
         vbos.add(vboID)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID)
@@ -55,7 +56,7 @@ class Loader {
         // static draw means that we will never edit the data again
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, floatBuffer, GL15.GL_STATIC_DRAW)
         // size:3 means x, y, z
-        GL20.glVertexAttribPointer(attributeNumber, 3, GL11.GL_FLOAT, false, 0, 0)
+        GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0)
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0)
     }
 
