@@ -1,7 +1,10 @@
 package shaders
 
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
+import org.lwjgl.util.vector.Matrix4f
+import org.lwjgl.util.vector.Vector3f
 import java.io.BufferedReader
 import java.io.FileReader
 
@@ -11,15 +14,46 @@ abstract class ShaderProgram(vertexFile: String, fragmentFile: String) {
     private val vertexShaderID: Int
     private val fragmentShaderID: Int
 
+    companion object {
+        // 16 because the matrices have 4x4 dimension
+        val matrixBuffer = BufferUtils.createFloatBuffer(16)
+    }
+
     init {
         vertexShaderID = load(vertexFile, GL20.GL_VERTEX_SHADER)
         fragmentShaderID = load(fragmentFile, GL20.GL_FRAGMENT_SHADER)
         programID = GL20.glCreateProgram()
+
         GL20.glAttachShader(programID, vertexShaderID)
         GL20.glAttachShader(programID, fragmentShaderID)
         bindAttributes()
         GL20.glLinkProgram(programID)
         GL20.glValidateProgram(programID)
+    }
+
+    protected abstract fun getAllUniformLocations()
+
+    protected fun getUniformLocation(uniformName: String): Int {
+        return GL20.glGetUniformLocation(programID, uniformName)
+    }
+
+    protected fun loadFloat(location: Int, value: Float) {
+        GL20.glUniform1f(location, value)
+    }
+
+    protected fun loadVector(location: Int, vector: Vector3f) {
+        GL20.glUniform3f(location, vector.x, vector.y, vector.z)
+    }
+
+    protected fun loadBoolean(location: Int, value: Boolean) {
+        val toLoad = if (value) 0F else 1F
+        GL20.glUniform1f(location, toLoad)
+    }
+
+    protected fun loadMatrix(location: Int, matrix: Matrix4f) {
+        matrix.store(matrixBuffer)
+        matrixBuffer.flip() // flag as ready
+        GL20.glUniformMatrix4(location, false, matrixBuffer)
     }
 
     fun start() {
