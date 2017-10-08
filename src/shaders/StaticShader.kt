@@ -3,8 +3,7 @@ package shaders
 import org.lwjgl.util.vector.Matrix4f
 
 class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
-
-    private var location_transformationMatrix = -1
+    private lateinit var location_transformationMatrix: Any
 
     companion object {
         private val VERTEX_FILE = "src/shaders/vertexShader"
@@ -13,7 +12,7 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
 
     override fun bindAttributes() {
         super.bindAttribute(0, "position")
-        super.bindAttribute(1, "textureCoords ")
+        super.bindAttribute(1, "textureCoords")
     }
 
     override fun getAllUniformLocations() {
@@ -21,6 +20,6 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     }
 
     fun loadTransformationMatrix(matrix: Matrix4f) {
-        super.loadMatrix(location_transformationMatrix, matrix)
+        super.loadMatrix(location_transformationMatrix as Int, matrix)
     }
 }

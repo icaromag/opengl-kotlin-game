@@ -1,8 +1,10 @@
 import core.engine.DisplayManager
 import core.engine.Loader
 import core.engine.Renderer
+import entities.Entity
 import models.TexturedModel
 import org.lwjgl.opengl.Display
+import org.lwjgl.util.vector.Vector3f
 import shaders.StaticShader
 import textures.ModelTexture
 
@@ -32,10 +34,14 @@ fun main(args: Array<String>) {
     val texture = ModelTexture(loader.loadTexture("image"))
     val texturedModel = TexturedModel(texture, rawModel)
 
+    val entity = Entity(
+            texturedModel, Vector3f(0F, 0F, 0F), 0F, 0F, 0F, 1F)
+
     do {
+        entity.increaseRotation(1F, 1f, 1f)
         renderer.prepare()
         shader.start()
-        renderer.render(texturedModel)
+        renderer.render(entity, shader)
         shader.stop()
         DisplayManager.update()
     } while (!Display.isCloseRequested())
