@@ -22,8 +22,9 @@ class Renderer(staticShader: StaticShader) {
     }
 
     fun prepare() {
+        GL11.glEnable(GL11.GL_DEPTH_TEST)
         // 1F rgba equals MAX(255F)
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT)
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT  )
         GL11.glClearColor(1F, 0F, 0F, 1F)
     }
 
