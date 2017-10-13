@@ -9,7 +9,7 @@ import org.lwjgl.util.vector.Vector3f
  *  data that belongs to the model itself.
  */
 class Entity(val texturedModel: TexturedModel, val position: Vector3f,
-             var rotY: Float, var rotX: Float, var rotZ: Float, val scale: Float) {
+             var rotX: Float, var rotY: Float, var rotZ: Float, val scale: Float) {
 
     fun increasePosition(dx: Float, dy: Float, dz: Float) =
             position.apply {
