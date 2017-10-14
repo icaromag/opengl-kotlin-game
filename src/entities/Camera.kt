@@ -1,5 +1,6 @@
 package entities
 
+import extensions.whenDown
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector3f
 
@@ -17,8 +18,4 @@ class Camera {
         Keyboard.KEY_A.whenDown { position.x += displacementRate }
         Keyboard.KEY_D.whenDown { position.x -= displacementRate }
     }
-}
-
-fun Int.whenDown(block: () -> Unit) {
-    if (Keyboard.isKeyDown(this)) block.invoke()
 }

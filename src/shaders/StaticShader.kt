@@ -10,8 +10,8 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var viewMatrixLocation: Any
 
     companion object {
-        private val VERTEX_FILE = "src/shaders/vertexShader"
-        private val FRAGMENT_FILE = "src/shaders/fragmentShader"
+        private val VERTEX_FILE = "src/shaders/glsl/vertexShader"
+        private val FRAGMENT_FILE = "src/shaders/glsl/fragmentShader"
     }
 
     override fun bindAttributes() {
