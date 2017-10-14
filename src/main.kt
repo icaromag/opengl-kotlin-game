@@ -16,16 +16,16 @@ fun main(args: Array<String>) {
     val loader = Loader()
     val staticShader = StaticShader()
     val renderer = Renderer(staticShader)
-    val rawModel = OBJLoader.loadObjModel("dragon", loader)
-    val texture = ModelTexture(loader.loadTexture("texture"))
+    val rawModel = OBJLoader.loadObjModel("stall", loader)
+    val texture = ModelTexture(loader.loadTexture("stallTexture"))
     val texturedModel = TexturedModel(texture, rawModel)
 
     val entity = Entity(
-            texturedModel, Vector3f(0F, -3F, -15F), 0F, 0F, 0F, 1F)
+            texturedModel, Vector3f(0F, -1F, -15F), 0F, 0F, 0F, 1F)
     val camera = Camera()
 
     do {
-        entity.increaseRotation(0F, 1F, 0F)
+        entity.increaseRotation(0F, 0.5F, 0F)
         renderer.prepare()
         camera.move()
         staticShader.start()

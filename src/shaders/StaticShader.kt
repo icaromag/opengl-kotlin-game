@@ -1,6 +1,7 @@
 package shaders
 
 import entities.Camera
+import entities.Light
 import org.lwjgl.util.vector.Matrix4f
 import utils.Maths
 
@@ -8,6 +9,8 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var transformationMatrixLocation: Any
     private lateinit var projectionMatrixLocation: Any
     private lateinit var viewMatrixLocation: Any
+    private lateinit var lightPositionLocation: Any
+    private lateinit var lightColorLocation: Any
 
     companion object {
         private val VERTEX_FILE = "src/shaders/glsl/vertexShader"
@@ -17,16 +20,24 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     override fun bindAttributes() {
         super.bindAttribute(0, "position")
         super.bindAttribute(1, "textureCoords")
+        super.bindAttribute(2, "normal")
     }
 
     override fun getAllUniformLocations() {
         transformationMatrixLocation = super.getUniformLocation("transformationMatrix")
         projectionMatrixLocation = super.getUniformLocation("projectionMatrix")
         viewMatrixLocation = super.getUniformLocation("viewMatrix")
+        lightPositionLocation = super.getUniformLocation("lightPosition")
+        lightColorLocation = super.getUniformLocation("lightColor")
     }
 
     fun loadTransformationMatrix(matrix: Matrix4f) {
         super.loadMatrix(transformationMatrixLocation as Int, matrix)
+    }
+
+    fun loadLight(light: Light) {
+        super.loadVector(lightPositionLocation as Int, light.position)
+        super.loadVector(lightColorLocation as Int, light.color)
     }
 
     fun loadProjectionMatrix(matrix: Matrix4f) {

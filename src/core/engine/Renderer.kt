@@ -34,6 +34,7 @@ class Renderer(staticShader: StaticShader) {
         GL30.glBindVertexArray(rawModel.vaoID)
         GL20.glEnableVertexAttribArray(0)
         GL20.glEnableVertexAttribArray(1)
+        GL20.glEnableVertexAttribArray(2) // obj normals
 
         val transformationMatrix = Maths.createTransformationMatrix(
                 entity.position, entity.rotX, entity.rotY, entity.rotZ, entity.scale)
@@ -44,6 +45,7 @@ class Renderer(staticShader: StaticShader) {
         GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
         GL20.glDisableVertexAttribArray(0)
         GL20.glDisableVertexAttribArray(1)
+        GL20.glDisableVertexAttribArray(2)  // obj normals
         GL30.glBindVertexArray(0)
     }
 
