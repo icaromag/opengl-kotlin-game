@@ -62,7 +62,7 @@ object OBJLoader {
 
         for (i in indices.indices) indicesArray[i] = indices[i]
 
-        return loader.loadToVAO(verticesArray, textureArray, indicesArray)
+        return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray)
     }
 
     private fun processVertex(vertexData: Array<String>, indices: MutableList<Int>, textures: List<Vector2f>,
