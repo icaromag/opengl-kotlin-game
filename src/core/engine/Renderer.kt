@@ -32,6 +32,7 @@ class Renderer(staticShader: StaticShader) {
         val texturedModel = entity.texturedModel
         val rawModel = texturedModel.rawModel
         GL30.glBindVertexArray(rawModel.vaoID)
+
         GL20.glEnableVertexAttribArray(0)
         GL20.glEnableVertexAttribArray(1)
         GL20.glEnableVertexAttribArray(2) // obj normals
@@ -43,9 +44,11 @@ class Renderer(staticShader: StaticShader) {
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.texture.textureID)
         GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
+
         GL20.glDisableVertexAttribArray(0)
         GL20.glDisableVertexAttribArray(1)
         GL20.glDisableVertexAttribArray(2)  // obj normals
+
         GL30.glBindVertexArray(0)
     }
 
