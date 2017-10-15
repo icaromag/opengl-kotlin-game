@@ -17,8 +17,8 @@ fun main(args: Array<String>) {
     val loader = Loader()
     val staticShader = StaticShader()
     val renderer = Renderer(staticShader)
-    val rawModel = OBJLoader.loadObjModel("dragon", loader)
-    val texture = ModelTexture(loader.loadTexture("texture"))
+    val rawModel = OBJLoader.loadObjModel("stall", loader)
+    val texture = ModelTexture(loader.loadTexture("stallTexture"))
     val texturedModel = TexturedModel(texture, rawModel)
 
     val entity = Entity(
@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
     val light = Light(Vector3f(0F, 0F, -20F), Vector3f(1F, 1F, 1F))
 
     do {
-        entity.increaseRotation(0F, 1F, 0F)
+        entity.increaseRotation(0F, 0.5F, 0F)
         renderer.prepare()
         camera.move()
         staticShader.start()
