@@ -61,7 +61,6 @@ object OBJLoader {
         }
 
         for (i in indices.indices) indicesArray[i] = indices[i]
-
         return loader.loadToVAO(verticesArray, textureArray, normalsArray, indicesArray)
     }
 
