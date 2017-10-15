@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
     val entity = Entity(
             texturedModel, Vector3f(0F, 0F, -25F), 0F, 0F, 0F, 1F)
     val camera = Camera()
-    val light = Light(Vector3f(0F, 0F, -20F), Vector3f(1F, 1F, 1F))
+    val light = Light(position = Vector3f(0F, 0F, -10F), color = Vector3f(1F, 1F, 1F))
 
     do {
         entity.increaseRotation(0F, 0.5F, 0F)

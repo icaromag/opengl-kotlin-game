@@ -8,10 +8,10 @@ object DisplayManager {
     private val FPS_CAP = 120
 
     fun create(displayTitle: String) {
-        val contextAttribs = ContextAttribs(3, 2)
+        val contextAttributes = ContextAttribs(3, 2)
                 .withForwardCompatible(true).withProfileCore(true)
         Display.setDisplayMode(DisplayMode(WIDTH, HEIGHT))
-        Display.create(PixelFormat(), contextAttribs)
+        Display.create(PixelFormat(), contextAttributes)
         Display.setTitle(displayTitle)
         GL11.glViewport(0, 0, WIDTH, HEIGHT)
     }
