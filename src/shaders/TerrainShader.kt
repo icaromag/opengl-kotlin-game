@@ -5,7 +5,7 @@ import entities.Light
 import org.lwjgl.util.vector.Matrix4f
 import utils.Maths
 
-class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
+class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var transformationMatrixLocation: Any
     private lateinit var projectionMatrixLocation: Any
     private lateinit var viewMatrixLocation: Any
@@ -13,11 +13,10 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var lightColorLocation: Any
     private lateinit var shineDamperLocation: Any
     private lateinit var reflectivityLocation: Any
-    private lateinit var useFakeLightingLocation: Any
 
     companion object {
-        private val VERTEX_FILE = "src/shaders/glsl/vertexShader"
-        private val FRAGMENT_FILE = "src/shaders/glsl/fragmentShader"
+        private val VERTEX_FILE = "src/shaders/glsl/terrainVertexShader"
+        private val FRAGMENT_FILE = "src/shaders/glsl/terrainFragmentShader"
     }
 
     override fun bindAttributes() {
@@ -34,11 +33,6 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         lightColorLocation = super.getUniformLocation("lightColor")
         shineDamperLocation = super.getUniformLocation("shineDamper")
         reflectivityLocation = super.getUniformLocation("reflectivity")
-        useFakeLightingLocation = super.getUniformLocation("useFakeLighting")
-    }
-
-    fun loadFakeLightingVariable(useFake: Boolean) {
-        super.loadBoolean(useFakeLightingLocation as Int, useFake)
     }
 
     fun loadShineVariables(damper: Float, reflectivity: Float) {
