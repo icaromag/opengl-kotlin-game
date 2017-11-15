@@ -3,6 +3,7 @@ package shaders
 import entities.Camera
 import entities.Light
 import org.lwjgl.util.vector.Matrix4f
+import org.lwjgl.util.vector.Vector3f
 import utils.Maths
 
 class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
@@ -13,6 +14,7 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var lightColorLocation: Any
     private lateinit var shineDamperLocation: Any
     private lateinit var reflectivityLocation: Any
+    private lateinit var skyColorLocation: Any
 
     companion object {
         private val VERTEX_FILE = "src/shaders/glsl/terrainVertexShader"
@@ -33,8 +35,12 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         lightColorLocation = super.getUniformLocation("lightColor")
         shineDamperLocation = super.getUniformLocation("shineDamper")
         reflectivityLocation = super.getUniformLocation("reflectivity")
+        skyColorLocation = super.getUniformLocation("skyColor")
     }
 
+    fun loadSkyColor(r: Float, g: Float, b: Float) {
+        super.loadVector(skyColorLocation as Int, Vector3f(r, g, b))
+    }
     fun loadShineVariables(damper: Float, reflectivity: Float) {
         super.loadFloat(shineDamperLocation as Int, damper)
         super.loadFloat(reflectivityLocation as Int, reflectivity)

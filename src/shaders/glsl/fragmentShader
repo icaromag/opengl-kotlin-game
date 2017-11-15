@@ -4,6 +4,7 @@ in vec2 passTextureCoordinates;
 in vec3 surfaceNormal;
 in vec3 toLightVector;
 in vec3 toCameraVector;
+in float visibility;
 
 out vec4 out_color;
 
@@ -13,6 +14,7 @@ uniform vec3 lightColor;
 // specular [IM]
 uniform float shineDamper;
 uniform float reflectivity;
+uniform vec3 skyColor;
 
 void main(void){
     vec3 unitNormal = normalize(surfaceNormal);
@@ -45,4 +47,6 @@ void main(void){
     }
 
 	out_color = vec4(diffuse, 1.0) * textureColor + vec4(finalSpecular, 1.0);
+	// apply the fog color by mixing based on camera distance [IM]
+	out_color = mix(vec4(skyColor, 1.0), out_color, visibility);
 }
