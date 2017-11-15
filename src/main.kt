@@ -17,9 +17,12 @@ fun main(args: Array<String>) {
     val loader = Loader()
     val staticShader = StaticShader()
     val renderer = Renderer(staticShader)
-    val rawModel = OBJLoader.loadObjModel("stall", loader)
-    val texture = ModelTexture(loader.loadTexture("stallTexture"))
+    val rawModel = OBJLoader.loadObjModel("dragon", loader)
+    val texture = ModelTexture(loader.loadTexture("texture"))
     val texturedModel = TexturedModel(texture, rawModel)
+    texturedModel.texture.shineDamper = 10F
+    texturedModel.texture.reflectivity = 1F
+    texture.reflectivity = 1F
 
     val entity = Entity(
             texturedModel, Vector3f(0F, 0F, -25F), 0F, 0F, 0F, 1F)
