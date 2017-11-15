@@ -19,7 +19,10 @@ void main(void){
     vec3 unitLightVector = normalize(toLightVector);
 
     float nDot1 = dot(unitNormal, unitLightVector);
-    float brightness = max(nDot1, 0.0);
+
+    // the second param greater than zero (0.2) means that
+    //   we added the ambient factor to the lighting
+    float brightness = max(nDot1, 0.2);
     vec3 diffuse = brightness * lightColor;
 
     // specular [IM]
