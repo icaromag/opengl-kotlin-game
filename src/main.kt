@@ -1,7 +1,7 @@
 import core.engine.DisplayManager
 import core.engine.Loader
 import core.engine.MasterRenderer
-import core.engine.OBJLoader
+import core.engine.objloader.OBJFileLoader
 import entities.Camera
 import entities.Entity
 import entities.Light
@@ -11,24 +11,28 @@ import org.lwjgl.util.vector.Vector3f
 import terrain.Terrain
 import textures.ModelTexture
 
-fun createEntities(loader: Loader) : MutableList<Entity> {
+fun createEntities(loader: Loader): MutableList<Entity> {
     val entities = mutableListOf<Entity>()
 
     // grass
-    val grassOBJModel = OBJLoader.loadObjModel("grassModel", loader)
+    val grassOBJModelData = OBJFileLoader.loadOBJ("grassModel")
+    val grassRawModel = loader.loadToVAO(
+            grassOBJModelData.vertices, grassOBJModelData.textureCoords, grassOBJModelData.normals, grassOBJModelData.indices)
     val grassTexture = ModelTexture(loader.loadTexture("grassTexture"))
     grassTexture.hasTransparency = true
     // TODO fix fake lighting [IM]
-    grassTexture.useFakeLighting = true
-    val grassTexturedModel = TexturedModel(grassTexture, grassOBJModel)
+    // grassTexture.useFakeLighting = true
+    val grassTexturedModel = TexturedModel(grassTexture, grassRawModel)
     val entityGrass = Entity(grassTexturedModel, Vector3f(400F, 0F, 380F),
             0F, 0F, 0F, 2F)
 
     // dragon
-    val dragonOBJModel = OBJLoader.loadObjModel("dragon", loader)
+    val dragonOBJModelData = OBJFileLoader.loadOBJ("dragon")
+    val dragonRawModel = loader.loadToVAO(
+            dragonOBJModelData.vertices, dragonOBJModelData.textureCoords, dragonOBJModelData.normals, dragonOBJModelData.indices)
     // load dragon [IM]
     val entityDragonTexture = ModelTexture(loader.loadTexture("texture"))
-    val texturedModel = TexturedModel(entityDragonTexture, dragonOBJModel)
+    val texturedModel = TexturedModel(entityDragonTexture, dragonRawModel)
     // configure specular lighting factors [IM]
     entityDragonTexture.shineDamper = 10F
     entityDragonTexture.reflectivity = 1F
