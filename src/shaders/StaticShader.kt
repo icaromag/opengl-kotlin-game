@@ -11,6 +11,8 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var viewMatrixLocation: Any
     private lateinit var lightPositionLocation: Any
     private lateinit var lightColorLocation: Any
+    private lateinit var shineDamperLocation: Any
+    private lateinit var reflectivityLocation: Any
 
     companion object {
         private val VERTEX_FILE = "src/shaders/glsl/vertexShader"
@@ -29,6 +31,13 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         viewMatrixLocation = super.getUniformLocation("viewMatrix")
         lightPositionLocation = super.getUniformLocation("lightPosition")
         lightColorLocation = super.getUniformLocation("lightColor")
+        shineDamperLocation = super.getUniformLocation("shineDamper")
+        reflectivityLocation = super.getUniformLocation("reflectivity")
+    }
+
+    fun loadShineVariables(damper: Float, reflectivity: Float) {
+        super.loadFloat(shineDamperLocation as Int, damper)
+        super.loadFloat(reflectivityLocation as Int, reflectivity)
     }
 
     fun loadTransformationMatrix(matrix: Matrix4f) {

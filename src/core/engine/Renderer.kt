@@ -41,6 +41,10 @@ class Renderer(staticShader: StaticShader) {
                 entity.position, entity.rotX, entity.rotY, entity.rotZ, entity.scale)
         // load the transform matrix into the shader
         shader.loadTransformationMatrix(transformationMatrix)
+        // load reflectivity for specular lighting [IM]
+        val texture = texturedModel.texture
+        shader.loadShineVariables(texture.shineDamper, texture.reflectivity)
+
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.texture.textureID)
         GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
