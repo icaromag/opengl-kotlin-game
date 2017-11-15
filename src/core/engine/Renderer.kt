@@ -24,26 +24,35 @@ class Renderer(staticShader: StaticShader) {
     fun prepare() {
         GL11.glEnable(GL11.GL_DEPTH_TEST)
         // 1F rgba equals MAX(255F)
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT  )
-        GL11.glClearColor(1F, 0F, 0F, 1F)
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+        GL11.glClearColor(0F, 0F, 0F, 1F)
     }
 
     fun render(entity: Entity, shader: StaticShader) {
         val texturedModel = entity.texturedModel
         val rawModel = texturedModel.rawModel
         GL30.glBindVertexArray(rawModel.vaoID)
+
         GL20.glEnableVertexAttribArray(0)
         GL20.glEnableVertexAttribArray(1)
+        GL20.glEnableVertexAttribArray(2) // obj normals
 
         val transformationMatrix = Maths.createTransformationMatrix(
                 entity.position, entity.rotX, entity.rotY, entity.rotZ, entity.scale)
         // load the transform matrix into the shader
         shader.loadTransformationMatrix(transformationMatrix)
+        // load reflectivity for specular lighting [IM]
+        val texture = texturedModel.texture
+        shader.loadShineVariables(texture.shineDamper, texture.reflectivity)
+
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.texture.textureID)
         GL11.glDrawElements(GL11.GL_TRIANGLES, rawModel.vertexCount, GL11.GL_UNSIGNED_INT, 0)
+
         GL20.glDisableVertexAttribArray(0)
         GL20.glDisableVertexAttribArray(1)
+        GL20.glDisableVertexAttribArray(2)  // obj normals
+
         GL30.glBindVertexArray(0)
     }
 

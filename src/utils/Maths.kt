@@ -26,10 +26,8 @@ class Maths {
                     viewMatrix)
             val cameraPosition = camera.position
             val negativeCameraPos = Vector3f(-cameraPosition.x, -cameraPosition.y, -cameraPosition.z)
-            Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix);
+            Matrix4f.translate(negativeCameraPos, viewMatrix, viewMatrix)
             return viewMatrix
         }
     }
-
-
 }

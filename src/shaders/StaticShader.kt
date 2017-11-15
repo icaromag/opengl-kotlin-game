@@ -1,41 +1,60 @@
 package shaders
 
 import entities.Camera
+import entities.Light
 import org.lwjgl.util.vector.Matrix4f
 import utils.Maths
 
 class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
-    private lateinit var location_transformationMatrix: Any
-    private lateinit var location_projectionMatrix: Any
-    private lateinit var location_viewMatrix: Any
+    private lateinit var transformationMatrixLocation: Any
+    private lateinit var projectionMatrixLocation: Any
+    private lateinit var viewMatrixLocation: Any
+    private lateinit var lightPositionLocation: Any
+    private lateinit var lightColorLocation: Any
+    private lateinit var shineDamperLocation: Any
+    private lateinit var reflectivityLocation: Any
 
     companion object {
-        private val VERTEX_FILE = "src/shaders/vertexShader"
-        private val FRAGMENT_FILE = "src/shaders/fragmentShader"
+        private val VERTEX_FILE = "src/shaders/glsl/vertexShader"
+        private val FRAGMENT_FILE = "src/shaders/glsl/fragmentShader"
     }
 
     override fun bindAttributes() {
         super.bindAttribute(0, "position")
-        super.bindAttribute(1, "textureCoords")
+        super.bindAttribute(1, "textureCoordinates")
+        super.bindAttribute(2, "normal")
     }
 
     override fun getAllUniformLocations() {
-        location_transformationMatrix = super.getUniformLocation("transformationMatrix")
-        location_projectionMatrix = super.getUniformLocation("projectionMatrix")
-        location_viewMatrix = super.getUniformLocation("viewMatrix")
+        transformationMatrixLocation = super.getUniformLocation("transformationMatrix")
+        projectionMatrixLocation = super.getUniformLocation("projectionMatrix")
+        viewMatrixLocation = super.getUniformLocation("viewMatrix")
+        lightPositionLocation = super.getUniformLocation("lightPosition")
+        lightColorLocation = super.getUniformLocation("lightColor")
+        shineDamperLocation = super.getUniformLocation("shineDamper")
+        reflectivityLocation = super.getUniformLocation("reflectivity")
+    }
+
+    fun loadShineVariables(damper: Float, reflectivity: Float) {
+        super.loadFloat(shineDamperLocation as Int, damper)
+        super.loadFloat(reflectivityLocation as Int, reflectivity)
     }
 
     fun loadTransformationMatrix(matrix: Matrix4f) {
-        super.loadMatrix(location_transformationMatrix as Int, matrix)
+        super.loadMatrix(transformationMatrixLocation as Int, matrix)
+    }
 
+    fun loadLight(light: Light) {
+        super.loadVector(lightPositionLocation as Int, light.position)
+        super.loadVector(lightColorLocation as Int, light.color)
     }
 
     fun loadProjectionMatrix(matrix: Matrix4f) {
-        super.loadMatrix(location_projectionMatrix as Int, matrix)
+        super.loadMatrix(projectionMatrixLocation as Int, matrix)
     }
 
     fun loadViewMatrix(camera: Camera) {
         val viewMatrix = Maths.createViewMatrix(camera)
-        super.loadMatrix(location_viewMatrix as Int, viewMatrix)
+        super.loadMatrix(viewMatrixLocation as Int, viewMatrix)
     }
 }
