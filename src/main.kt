@@ -17,10 +17,12 @@ fun createEntities(loader: Loader) : MutableList<Entity> {
     // grass
     val grassOBJModel = OBJLoader.loadObjModel("grassModel", loader)
     val grassTexture = ModelTexture(loader.loadTexture("grassTexture"))
+    grassTexture.hasTransparency = true
+    // TODO fix fake lighting [IM]
+    grassTexture.useFakeLighting = true
     val grassTexturedModel = TexturedModel(grassTexture, grassOBJModel)
     val entityGrass = Entity(grassTexturedModel, Vector3f(400F, 0F, 380F),
             0F, 0F, 0F, 2F)
-
 
     // dragon
     val dragonOBJModel = OBJLoader.loadObjModel("dragon", loader)
@@ -51,12 +53,8 @@ fun main(args: Array<String>) {
 
     // 400 is half 800 (terrain size) [IM]
     val camera = Camera(Vector3f(400F, 10F, 350F))
-    val light = Light(
-            position = Vector3f(400F, 1000F, 400F),
+    val light = Light(position = Vector3f(400F, 20000F, 500F),
             color = Vector3f(1F, 1F, 1F))
-
-
-
 
     // loading terrain [IM]
     val terrainGrassTexture = ModelTexture(loader.loadTexture("grass"))

@@ -33,6 +33,7 @@ public class MasterRenderer {
     private TerrainShader terrainShader = new TerrainShader();
 
     public MasterRenderer() {
+        enableCulling();
         createProjectionMatrix();
         renderer = new EntityRenderer(shader, projectionMatrix);
         terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);

@@ -11,7 +11,6 @@ import utils.Maths
 class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
     var shader: StaticShader = staticShader
 
-
     init {
         staticShader.start()
         staticShader.loadProjectionMatrix(projectionMatrix)
@@ -30,7 +29,7 @@ class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
         }
     }
 
-    fun prepareTexturedModel(texturedModel: TexturedModel) {
+    private fun prepareTexturedModel(texturedModel: TexturedModel) {
         val rawModel = texturedModel.rawModel
         GL30.glBindVertexArray(rawModel.vaoID)
         GL20.glEnableVertexAttribArray(0)
@@ -38,21 +37,24 @@ class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
         GL20.glEnableVertexAttribArray(2) // obj normals
         val texture = texturedModel.texture
         if(texture.hasTransparency) {
-            MasterRenderer.enableCulling()
+            MasterRenderer.disableCulling()
         }
+        // TODO fix this fake lighting piece [IM]
+        // shader.loadFakeLightingVariable(texture.useFakeLighting)
         shader.loadShineVariables(texture.shineDamper, texture.reflectivity)
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.texture.textureID)
     }
 
-    fun unbindTexturedModel() {
+    private fun unbindTexturedModel() {
+        MasterRenderer.enableCulling()
         GL20.glDisableVertexAttribArray(0)
         GL20.glDisableVertexAttribArray(1)
         GL20.glDisableVertexAttribArray(2)  // obj normals
         GL30.glBindVertexArray(0)
     }
 
-    fun prepareInstance(entity: Entity) {
+    private fun prepareInstance(entity: Entity) {
         val transformationMatrix = Maths.createTransformationMatrix(
                 entity.position, entity.rotX, entity.rotY, entity.rotZ, entity.scale)
         // load the transform matrix into the shader

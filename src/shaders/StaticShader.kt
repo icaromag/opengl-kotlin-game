@@ -13,6 +13,7 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var lightColorLocation: Any
     private lateinit var shineDamperLocation: Any
     private lateinit var reflectivityLocation: Any
+    private lateinit var useFakeLightingLocation: Any
 
     companion object {
         private val VERTEX_FILE = "src/shaders/glsl/vertexShader"
@@ -33,6 +34,11 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         lightColorLocation = super.getUniformLocation("lightColor")
         shineDamperLocation = super.getUniformLocation("shineDamper")
         reflectivityLocation = super.getUniformLocation("reflectivity")
+        useFakeLightingLocation = super.getUniformLocation("useFakeLighting")
+    }
+
+    fun loadFakeLightingVariable(useFake: Boolean) {
+        super.loadBoolean(useFakeLightingLocation as Int, useFake)
     }
 
     fun loadShineVariables(damper: Float, reflectivity: Float) {
