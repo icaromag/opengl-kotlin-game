@@ -3,34 +3,19 @@ package core.engine
 import entities.Entity
 import models.TexturedModel
 import org.lwjgl.opengl.*
+import org.lwjgl.util.vector.Matrix4f
 import shaders.StaticShader
 import utils.Maths
-import org.lwjgl.util.vector.Matrix4f
 
 
-class Renderer(staticShader: StaticShader) {
+class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
     var shader: StaticShader = staticShader
 
-    companion object {
-        val FOV = 70F
-        val NEAR_PLANE = 0.1F
-        val FAR_PLANE = 1000F // how far you can see
-    }
 
     init {
-        GL11.glEnable(GL11.GL_CULL_FACE)
-        GL11.glCullFace(GL11.GL_BACK)
-        createProjectionMatrix()
         staticShader.start()
-        staticShader.loadProjectionMatrix(createProjectionMatrix())
+        staticShader.loadProjectionMatrix(projectionMatrix)
         staticShader.stop()
-    }
-
-    fun prepare() {
-        GL11.glEnable(GL11.GL_DEPTH_TEST)
-        // 1F rgba equals MAX(255F)
-        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
-        GL11.glClearColor(0F, 0F, 0F, 1F)
     }
 
     fun render(entities: Map<TexturedModel, List<Entity>>) {
@@ -70,22 +55,5 @@ class Renderer(staticShader: StaticShader) {
                 entity.position, entity.rotX, entity.rotY, entity.rotZ, entity.scale)
         // load the transform matrix into the shader
         shader.loadTransformationMatrix(transformationMatrix)
-    }
-
-    private fun createProjectionMatrix(): Matrix4f {
-        val aspectRatio = Display.getWidth() / Display.getHeight()
-        val yScale = (1f / Math.tan(Math.toRadians((FOV / 2f).toDouble())) * aspectRatio)
-        val xScale = yScale / aspectRatio
-        val frustumLength = FAR_PLANE - NEAR_PLANE
-        val projectionMatrix = Matrix4f()
-        projectionMatrix.run {
-            m00 = xScale.toFloat()
-            m11 = yScale.toFloat()
-            m22 = -((FAR_PLANE + NEAR_PLANE) / frustumLength)
-            m23 = -1F
-            m32 = -(2 * NEAR_PLANE * FAR_PLANE / frustumLength)
-            m33 = 0F
-        }
-        return projectionMatrix
     }
 }

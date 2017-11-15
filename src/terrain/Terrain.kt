@@ -5,11 +5,11 @@ import models.RawModel
 import textures.ModelTexture
 
 
-class Terrain(gridX: Float, gridZ: Float, loader: Loader, private val texture: ModelTexture) {
+class Terrain(gridX: Float, gridZ: Float, loader: Loader, val texture: ModelTexture) {
 
-    private val x: Float
-    private val z: Float
-    private val model: RawModel
+    val x: Float
+    val z: Float
+    val model: RawModel
 
     companion object {
         private val SIZE = 800F

@@ -5,14 +5,13 @@ import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector3f
 
-class Camera {
+class Camera(val position: Vector3f) {
     private val keyboardDisplacementRate = .08F
     private val mouseWheelkeyboardDisplacementRate = .08F
 
-    val position = Vector3f(0F, 0F, 0F)
     val pitch: Float = 0.0F
-    val yaw: Float = 0.0F
-    val roll: Float = 0.0F
+    val yaw: Float = 180F
+    val roll: Float = 0F
 
     fun move() {
         val mouseWheelDisplacement = Mouse.getDWheel()
