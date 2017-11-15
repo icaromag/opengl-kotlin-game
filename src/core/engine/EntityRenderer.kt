@@ -37,8 +37,10 @@ class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
         GL20.glEnableVertexAttribArray(1)
         GL20.glEnableVertexAttribArray(2) // obj normals
         val texture = texturedModel.texture
+        if(texture.hasTransparency) {
+            MasterRenderer.enableCulling()
+        }
         shader.loadShineVariables(texture.shineDamper, texture.reflectivity)
-
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.texture.textureID)
     }

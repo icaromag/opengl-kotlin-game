@@ -9,8 +9,8 @@ class Camera(val position: Vector3f) {
     private val keyboardDisplacementRate = .08F
     private val mouseWheelkeyboardDisplacementRate = .08F
 
-    val pitch: Float = 0.0F
-    val yaw: Float = 180F
+    val pitch: Float = 0F
+    var yaw: Float = 180F
     val roll: Float = 0F
 
     fun move() {
@@ -21,6 +21,8 @@ class Camera(val position: Vector3f) {
         Keyboard.KEY_D.whenDown { position.x -= keyboardDisplacementRate }
         Keyboard.KEY_UP.whenDown { position.y -= keyboardDisplacementRate }
         Keyboard.KEY_DOWN.whenDown { position.y += keyboardDisplacementRate }
+        Keyboard.KEY_LEFT.whenDown { yaw -= keyboardDisplacementRate }
+        Keyboard.KEY_RIGHT.whenDown { yaw += keyboardDisplacementRate }
         if (mouseWheelDisplacement > 0) {
             position.z += mouseWheelkeyboardDisplacementRate
         } else if (mouseWheelDisplacement < 0) {

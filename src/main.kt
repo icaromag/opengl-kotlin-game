@@ -1,52 +1,79 @@
-import core.engine.*
+import core.engine.DisplayManager
+import core.engine.Loader
+import core.engine.MasterRenderer
+import core.engine.OBJLoader
 import entities.Camera
 import entities.Entity
 import entities.Light
 import models.TexturedModel
 import org.lwjgl.opengl.Display
-import org.lwjgl.util.vector.Vector
 import org.lwjgl.util.vector.Vector3f
 import terrain.Terrain
 import textures.ModelTexture
+
+fun createEntities(loader: Loader) : MutableList<Entity> {
+    val entities = mutableListOf<Entity>()
+
+    // grass
+    val grassOBJModel = OBJLoader.loadObjModel("grassModel", loader)
+    val grassTexture = ModelTexture(loader.loadTexture("grassTexture"))
+    val grassTexturedModel = TexturedModel(grassTexture, grassOBJModel)
+    val entityGrass = Entity(grassTexturedModel, Vector3f(400F, 0F, 380F),
+            0F, 0F, 0F, 2F)
+
+
+    // dragon
+    val dragonOBJModel = OBJLoader.loadObjModel("dragon", loader)
+    // load dragon [IM]
+    val entityDragonTexture = ModelTexture(loader.loadTexture("texture"))
+    val texturedModel = TexturedModel(entityDragonTexture, dragonOBJModel)
+    // configure specular lighting factors [IM]
+    entityDragonTexture.shineDamper = 10F
+    entityDragonTexture.reflectivity = 1F
+    val entityDragon = Entity(texturedModel, Vector3f(400F, 0F, 380F),
+            0F, 0F, 0F, 1F)
+
+
+    entities.add(entityDragon)
+    entities.add(entityGrass)
+    return entities
+}
 
 fun main(args: Array<String>) {
     DisplayManager.create("ICG Loot Simulator")
 
     val loader = Loader()
+
     val renderer = MasterRenderer()
-    val rawModel = OBJLoader.loadObjModel("dragon", loader)
-    val modelTexture = ModelTexture(loader.loadTexture("texture"))
-    val texturedModel = TexturedModel(modelTexture, rawModel)
-
-    // configure specular lighting factors [IM]
-    modelTexture.shineDamper = 10F
-    modelTexture.reflectivity = 1F
 
 
-    val camera = Camera(Vector3f(50F, 10F, 0F))
+    val entities = createEntities(loader)
+
+    // 400 is half 800 (terrain size) [IM]
+    val camera = Camera(Vector3f(400F, 10F, 350F))
     val light = Light(
-            position = Vector3f(50F, 15F, 0F),
+            position = Vector3f(400F, 1000F, 400F),
             color = Vector3f(1F, 1F, 1F))
 
-    // entities and the terrain model [IM]
-    val entity = Entity(texturedModel, Vector3f(50F, 5F, 15F),
-            0F, 0F, 0F, 1F)
 
-    val terrain1 = Terrain(0F, 0F, loader, ModelTexture(loader.loadTexture("grass")))
-    val terrain2 = Terrain(1F, 0F, loader, ModelTexture(loader.loadTexture("grass")))
 
-    // TODO change to kotlin implementation [IM]
+
+    // loading terrain [IM]
+    val terrainGrassTexture = ModelTexture(loader.loadTexture("grass"))
+    terrainGrassTexture.shineDamper = 10F
+    val terrain = Terrain(0F, 0F, loader, terrainGrassTexture)
+
 
     do {
-        entity.increaseRotation(0F, 0.5F, 0F)
         camera.move()
 
         // terrains [IM]
-        renderer.processTerrains(terrain1)
-        renderer.processTerrains(terrain2)
+        renderer.processTerrains(terrain)
 
         // entities [IM]
-        renderer.processEntity(entity)
+        entities.forEach {
+            renderer.processEntity(it)
+        }
         renderer.render(light, camera)
         // loading 1 time per frame gives us the option
         //   to move the light and the camera during the

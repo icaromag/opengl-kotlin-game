@@ -33,11 +33,18 @@ public class MasterRenderer {
     private TerrainShader terrainShader = new TerrainShader();
 
     public MasterRenderer() {
-        GL11.glEnable(GL11.GL_CULL_FACE);
-        GL11.glCullFace(GL11.GL_BACK);
         createProjectionMatrix();
         renderer = new EntityRenderer(shader, projectionMatrix);
         terrainRenderer = new TerrainRenderer(terrainShader, projectionMatrix);
+    }
+
+    public static void enableCulling() {
+        GL11.glEnable(GL11.GL_CULL_FACE);
+        GL11.glCullFace(GL11.GL_BACK);
+    }
+
+    public static void disableCulling() {
+        GL11.glDisable(GL11.GL_CULL_FACE);
     }
 
     public void render(Light sun, Camera camera) {
@@ -62,7 +69,7 @@ public class MasterRenderer {
         GL11.glEnable(GL11.GL_DEPTH_TEST);
         // 1F rgba equals MAX(255F)
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
-        GL11.glClearColor(0F, 0F, 0F, 1F);
+        GL11.glClearColor(0.3F, 0.5F, 0.6F, 1F);
     }
 
     public void processEntity(Entity entity) {
