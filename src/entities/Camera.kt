@@ -6,11 +6,11 @@ import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector3f
 
 class Camera(val position: Vector3f) {
-    private val keyboardDisplacementRate = .08F
-    private val mouseWheelkeyboardDisplacementRate = .08F
+    private val keyboardDisplacementRate = 1.3F
+    private val mouseWheelDisplacementRate = .08F
 
-    val pitch: Float = 0F
-    var yaw: Float = 180F
+    val pitch: Float = 45F
+    var yaw: Float = 0F
     val roll: Float = 0F
 
     fun move() {
@@ -24,9 +24,9 @@ class Camera(val position: Vector3f) {
         Keyboard.KEY_LEFT.whenDown { yaw -= keyboardDisplacementRate }
         Keyboard.KEY_RIGHT.whenDown { yaw += keyboardDisplacementRate }
         if (mouseWheelDisplacement > 0) {
-            position.z += mouseWheelkeyboardDisplacementRate
+            position.z += mouseWheelDisplacementRate
         } else if (mouseWheelDisplacement < 0) {
-            position.z -= mouseWheelkeyboardDisplacementRate
+            position.z -= mouseWheelDisplacementRate
         }
     }
 }

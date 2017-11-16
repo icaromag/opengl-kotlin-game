@@ -16,6 +16,13 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var reflectivityLocation: Any
     private lateinit var skyColorLocation: Any
 
+    private lateinit var backgroundTextureLocation: Any
+    private lateinit var rTextureLocation: Any
+    private lateinit var gTextureLocation: Any
+    private lateinit var bTextureLocation: Any
+    private lateinit var blendMapLocation: Any
+
+
     companion object {
         private val VERTEX_FILE = "src/shaders/glsl/terrainVertexShader"
         private val FRAGMENT_FILE = "src/shaders/glsl/terrainFragmentShader"
@@ -36,11 +43,26 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         shineDamperLocation = super.getUniformLocation("shineDamper")
         reflectivityLocation = super.getUniformLocation("reflectivity")
         skyColorLocation = super.getUniformLocation("skyColor")
+
+        backgroundTextureLocation = super.getUniformLocation("backgroundTexture")
+        rTextureLocation = super.getUniformLocation("rTexture")
+        gTextureLocation = super.getUniformLocation("gTexture")
+        bTextureLocation = super.getUniformLocation("bTexture")
+        blendMapLocation = super.getUniformLocation("blendMap")
+    }
+
+    fun connectTextureUnits() {
+        super.loadInt(backgroundTextureLocation as Int, 0)
+        super.loadInt(rTextureLocation as Int, 1)
+        super.loadInt(gTextureLocation as Int, 2)
+        super.loadInt(bTextureLocation as Int, 3)
+        super.loadInt(blendMapLocation as Int, 4)
     }
 
     fun loadSkyColor(r: Float, g: Float, b: Float) {
         super.loadVector(skyColorLocation as Int, Vector3f(r, g, b))
     }
+
     fun loadShineVariables(damper: Float, reflectivity: Float) {
         super.loadFloat(shineDamperLocation as Int, damper)
         super.loadFloat(reflectivityLocation as Int, reflectivity)

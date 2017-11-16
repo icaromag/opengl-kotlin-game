@@ -10,6 +10,8 @@ import org.lwjgl.opengl.Display
 import org.lwjgl.util.vector.Vector3f
 import terrain.Terrain
 import textures.ModelTexture
+import textures.TerrainTexture
+import textures.TerrainTexturePack
 
 fun createEntities(loader: Loader): MutableList<Entity> {
     val entities = mutableListOf<Entity>()
@@ -39,43 +41,44 @@ fun createEntities(loader: Loader): MutableList<Entity> {
     val entityDragon = Entity(texturedModel, Vector3f(400F, 0F, 380F),
             0F, 0F, 0F, 1F)
 
-
     entities.add(entityDragon)
     entities.add(entityGrass)
     return entities
 }
 
+fun createTerrainPack(loader: Loader): TerrainTexturePack {
+    val backgroundTexture = TerrainTexture(loader.loadTexture("/terrain/textures/grassy2"))
+    val rTexture = TerrainTexture(loader.loadTexture("/terrain/textures/mud"))
+    val gTexture = TerrainTexture(loader.loadTexture("/terrain/textures/grassFlowers"))
+    val bTexture = TerrainTexture(loader.loadTexture("/terrain/textures/path"))
+    val texturePack = TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture)
+    return texturePack
+}
+
 fun main(args: Array<String>) {
     DisplayManager.create("ICG Loot Simulator")
-
     val loader = Loader()
-
     val renderer = MasterRenderer()
-
-
     val entities = createEntities(loader)
+    val terrainPack = createTerrainPack(loader)
 
     // 400 is half 800 (terrain size) [IM]
-    val camera = Camera(Vector3f(400F, 10F, 350F))
-    val light = Light(position = Vector3f(400F, 20000F, 500F),
+    val camera = Camera(Vector3f(0F, 50F, 0F))
+    val light = Light(position = Vector3f(20000F, 40000F, 20000F),
             color = Vector3f(1F, 1F, 1F))
 
     // loading terrain [IM]
-    val terrainGrassTexture = ModelTexture(loader.loadTexture("grass"))
-    terrainGrassTexture.shineDamper = 10F
-    val terrain = Terrain(0F, 0F, loader, terrainGrassTexture)
-
+    val blendMap = TerrainTexture(loader.loadTexture("/terrain/textures/blendMap"))
+    val terrain1 = Terrain(0F, -1F, loader, terrainPack, blendMap)
+    val terrain2 = Terrain(-1F, -1F, loader, terrainPack, blendMap)
 
     do {
         camera.move()
-
         // terrains [IM]
-        renderer.processTerrains(terrain)
-
+        renderer.processTerrains(terrain1)
+        renderer.processTerrains(terrain2)
         // entities [IM]
-        entities.forEach {
-            renderer.processEntity(it)
-        }
+        entities.forEach { renderer.processEntity(it) }
         renderer.render(light, camera)
         // loading 1 time per frame gives us the option
         //   to move the light and the camera during the
