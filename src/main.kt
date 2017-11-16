@@ -15,7 +15,6 @@ import textures.TerrainTexturePack
 
 fun createEntities(loader: Loader): MutableList<Entity> {
     val entities = mutableListOf<Entity>()
-
     // grass
     val grassOBJModelData = OBJFileLoader.loadOBJ("grassModel")
     val grassRawModel = loader.loadToVAO(
@@ -51,8 +50,8 @@ fun createTerrainPack(loader: Loader): TerrainTexturePack {
     val rTexture = TerrainTexture(loader.loadTexture("/terrain/textures/mud"))
     val gTexture = TerrainTexture(loader.loadTexture("/terrain/textures/grassFlowers"))
     val bTexture = TerrainTexture(loader.loadTexture("/terrain/textures/path"))
-    val texturePack = TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture)
-    return texturePack
+    // return the full pack [IM]
+    return TerrainTexturePack(backgroundTexture, rTexture, gTexture, bTexture)
 }
 
 fun main(args: Array<String>) {
@@ -78,7 +77,7 @@ fun main(args: Array<String>) {
         renderer.processTerrains(terrain1)
         renderer.processTerrains(terrain2)
         // entities [IM]
-        entities.forEach { renderer.processEntity(it) }
+//        entities.forEach { renderer.processEntity(it) }
         renderer.render(light, camera)
         // loading 1 time per frame gives us the option
         //   to move the light and the camera during the
