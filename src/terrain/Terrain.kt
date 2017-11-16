@@ -2,10 +2,15 @@ package terrain
 
 import core.engine.Loader
 import models.RawModel
-import textures.ModelTexture
+import textures.TerrainTexture
+import textures.TerrainTexturePack
 
 
-class Terrain(gridX: Float, gridZ: Float, loader: Loader, val texture: ModelTexture) {
+class Terrain(
+        gridX: Float, gridZ: Float, loader: Loader,
+        val texturePack: TerrainTexturePack,
+        val blendMap: TerrainTexture
+) {
 
     val x: Float
     val z: Float
@@ -20,7 +25,7 @@ class Terrain(gridX: Float, gridZ: Float, loader: Loader, val texture: ModelText
     init {
         x = gridX * SIZE
         z = gridZ * SIZE
-        this.model = generateTerrain(loader)
+        model = generateTerrain(loader)
     }
 
     // TODO change this mess to something more readable [IM]
@@ -38,10 +43,10 @@ class Terrain(gridX: Float, gridZ: Float, loader: Loader, val texture: ModelText
         var vertexPointer = 0
         for (i in 0 until VERTEX_COUNT) {
             for (j in 0 until VERTEX_COUNT) {
-                vertices[vertexPointer * 3] = j.toFloat() / (VERTEX_COUNT.toFloat() - 1) * SIZE
+                vertices[vertexPointer * 3 + 0] = j.toFloat() / (VERTEX_COUNT.toFloat() - 1) * SIZE
                 vertices[vertexPointer * 3 + 1] = 0F
                 vertices[vertexPointer * 3 + 2] = i.toFloat() / (VERTEX_COUNT.toFloat() - 1) * SIZE
-                normals[vertexPointer * 3] = 0F
+                normals[vertexPointer * 3 + 0] = 0F
                 normals[vertexPointer * 3 + 1] = 1F
                 normals[vertexPointer * 3 + 2] = 0F
                 textureCoordinates[vertexPointer * 2] = j.toFloat() / (VERTEX_COUNT.toFloat() - 1)
