@@ -3,6 +3,7 @@ package shaders
 import entities.Camera
 import entities.Light
 import org.lwjgl.util.vector.Matrix4f
+import org.lwjgl.util.vector.Vector3f
 import utils.Maths
 
 class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
@@ -14,6 +15,7 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var shineDamperLocation: Any
     private lateinit var reflectivityLocation: Any
     private lateinit var useFakeLightingLocation: Any
+    private lateinit var skyColorLocation: Any
 
     companion object {
         private val VERTEX_FILE = "src/shaders/glsl/vertexShader"
@@ -35,6 +37,11 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         shineDamperLocation = super.getUniformLocation("shineDamper")
         reflectivityLocation = super.getUniformLocation("reflectivity")
         useFakeLightingLocation = super.getUniformLocation("useFakeLighting")
+        skyColorLocation = super.getUniformLocation("skyColor")
+    }
+
+    fun loadSkyColor(r: Float, g: Float, b: Float) {
+        super.loadVector(skyColorLocation as Int, Vector3f(r, g, b))
     }
 
     fun loadFakeLightingVariable(useFake: Boolean) {

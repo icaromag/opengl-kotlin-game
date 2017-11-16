@@ -9,6 +9,7 @@ out vec3 surfaceNormal;
 out vec3 toLightVector;
 // specular lighting vars [IM]
 out vec3 toCameraVector;
+out float visibility;
 
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
@@ -17,9 +18,13 @@ uniform vec3 lightPosition;
 
 uniform float useFakeLighting;
 
+const float density = 0.007;
+const float gradient = 1.5;
+
 void main(void){
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
-	gl_Position = projectionMatrix * viewMatrix * worldPosition;
+    vec4 positionRelativeToCamera = viewMatrix * worldPosition;
+	gl_Position = projectionMatrix * positionRelativeToCamera;
 	passTextureCoordinates = textureCoordinates;
 
 	vec3 actualNormal = normal;
@@ -33,4 +38,9 @@ void main(void){
 	// invert the negative camera position and turn into a 4d vector [IM]
 	// we get the position by subtracting the worldPosition [IM]
 	toCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
+
+	float distance = length(positionRelativeToCamera.xyz);
+	visibility = exp(-pow((distance * density), gradient));
+	// clamp holds the value between 0 and 1 [IM]
+	visibility = clamp(visibility, 0.0, 1.0);
 }
