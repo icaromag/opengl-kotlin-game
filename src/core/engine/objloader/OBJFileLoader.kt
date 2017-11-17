@@ -12,11 +12,9 @@ object OBJFileLoader {
     private val RES_LOC = "res/"
 
     fun loadOBJ(objFileName: String): ModelData {
-        var isr: FileReader? = null
         val objFile = File(RES_LOC + objFileName + ".obj")
-        isr = FileReader(objFile)
-
-        val reader = BufferedReader(isr!!)
+        val isr = FileReader(objFile)
+        val reader = BufferedReader(isr)
         var line: String?
         val vertices = ArrayList<Vertex>()
         val textures = ArrayList<Vector2f>()
