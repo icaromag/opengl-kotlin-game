@@ -2,11 +2,14 @@ package terrain
 
 import core.engine.Loader
 import models.RawModel
+import org.lwjgl.util.vector.Vector3f
 import textures.TerrainTexture
 import textures.TerrainTexturePack
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
+import javax.swing.text.html.HTML.Tag.P
+import javax.swing.Spring.height
 
 
 class Terrain(
@@ -55,9 +58,11 @@ class Terrain(
                 // height based on the offset [IM]
                 vertices[vertexPointer * 3 + 1] = getHeight(j, i, image)
                 vertices[vertexPointer * 3 + 2] = i.toFloat() / (vertexCount.toFloat() - 1) * SIZE
-                normals[vertexPointer * 3 + 0] = 0F
-                normals[vertexPointer * 3 + 1] = 1F
-                normals[vertexPointer * 3 + 2] = 0F
+                // normals based on normal calc method [IM]
+                val normal = calculateNormal(j, i, image)
+                normals[vertexPointer * 3 + 0] = normal.x
+                normals[vertexPointer * 3 + 1] = normal.y
+                normals[vertexPointer * 3 + 2] = normal.z
                 textureCoordinates[vertexPointer * 2] = j.toFloat() / (vertexCount.toFloat() - 1)
                 textureCoordinates[vertexPointer * 2 + 1] = i.toFloat() / (vertexCount.toFloat() - 1)
                 vertexPointer++
@@ -81,7 +86,7 @@ class Terrain(
         return loader.loadToVAO(vertices, textureCoordinates, normals, indices)
     }
 
-    fun getHeight(x: Int, z: Int, image: BufferedImage): Float {
+    private fun getHeight(x: Int, z: Int, image: BufferedImage): Float {
         if (x < 0 || x >= image.height || z < 0 || z >= image.height) {
             return 0F
         }
@@ -91,5 +96,17 @@ class Terrain(
         height /= MAX_PIXEL_COLOR / 2F
         height *= MAX_HEIGHT
         return height
+    }
+
+    private fun calculateNormal(x: Int, z: Int, image: BufferedImage): Vector3f {
+        // this approach is not optimum. Should be changed soon [IM]
+        // check this out: https://stackoverflow.com/questions/13983189/opengl-how-to-calculate-normals-in-a-terrain-height-grid
+        val heightL = getHeight(x - 1, z, image)
+        val heightR = getHeight(x + 1, z, image)
+        val heightD = getHeight(x, z - 1, image)
+        val heightU = getHeight(x, z + 1, image)
+        val normal = Vector3f(heightL - heightR, 2F, heightD - heightU)
+        normal.normalise()
+        return normal
     }
 }
