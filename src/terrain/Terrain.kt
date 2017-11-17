@@ -4,6 +4,7 @@ import core.engine.Loader
 import models.RawModel
 import org.lwjgl.util.vector.Vector2f
 import org.lwjgl.util.vector.Vector3f
+import random
 import textures.TerrainTexture
 import textures.TerrainTexturePack
 import utils.Maths
@@ -143,5 +144,12 @@ class Terrain(
         val normal = Vector3f(heightL - heightR, 2F, heightD - heightU)
         normal.normalise()
         return normal
+    }
+
+    fun getRandomLocation() : Vector3f {
+        val x = random.nextFloat() * 400
+        val z = random.nextFloat() * -400
+        val y = getHeightOfTerrain(x, z)
+        return Vector3f(x, y, z)
     }
 }

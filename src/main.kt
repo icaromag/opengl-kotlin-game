@@ -14,24 +14,9 @@ import terrain.Terrain
 import textures.ModelTexture
 import textures.TerrainTexture
 import textures.TerrainTexturePack
+import java.util.*
 
-fun createEntities(loader: Loader): MutableList<Entity> {
-    val entities = mutableListOf<Entity>()
-    // grass
-    val grassOBJModelData = OBJFileLoader.loadOBJ("grassModel")
-    val grassRawModel = loader.loadToVAO(
-            grassOBJModelData.vertices, grassOBJModelData.textureCoords, grassOBJModelData.normals, grassOBJModelData.indices)
-    val grassTexture = ModelTexture(loader.loadTexture("grassTexture"))
-    grassTexture.hasTransparency = true
-    // TODO fix fake lighting [IM]
-    grassTexture.useFakeLighting = true
-    val grassTexturedModel = TexturedModel(grassTexture, grassRawModel)
-    val entityGrass = Entity(grassTexturedModel, Vector3f(0F, 0F, -50F),
-            0F, 0F, 0F, 4F)
-
-    entities.add(entityGrass)
-    return entities
-}
+val random = Random()
 
 fun loadPlayer(loader: Loader): Player {
     // dragon
@@ -49,6 +34,54 @@ fun loadPlayer(loader: Loader): Player {
             0F, 180F, 0F, 0.6F)
 }
 
+fun createEntities(loader: Loader, terrain: Terrain): MutableList<Entity> {
+    val entities = mutableListOf<Entity>()
+    // low poly tree
+    val lowPolyTreeOBJModelData = OBJFileLoader.loadOBJ("tree")
+    val lowPolyTreeRawModel = loader.loadToVAO(
+            lowPolyTreeOBJModelData.vertices, lowPolyTreeOBJModelData.textureCoords, lowPolyTreeOBJModelData.normals, lowPolyTreeOBJModelData.indices)
+    val lowPolyTreeTexture = ModelTexture(loader.loadTexture("tree"))
+    val lowPolyTreeModel = TexturedModel(lowPolyTreeTexture, lowPolyTreeRawModel)
+
+    // grass
+    val grassOBJModelData = OBJFileLoader.loadOBJ("grassModel")
+    val grassRawModel = loader.loadToVAO(
+            grassOBJModelData.vertices, grassOBJModelData.textureCoords, grassOBJModelData.normals, grassOBJModelData.indices)
+    val grassTexture = ModelTexture(loader.loadTexture("grassTexture"))
+    grassTexture.hasTransparency = true
+    grassTexture.useFakeLighting = true
+    val grassTexturedModel = TexturedModel(grassTexture, grassRawModel)
+
+    // ferns
+    val fernOBJModelData = OBJFileLoader.loadOBJ("fern")
+    val fernRawModel = loader.loadToVAO(
+            fernOBJModelData.vertices, fernOBJModelData.textureCoords, fernOBJModelData.normals, fernOBJModelData.indices)
+    val fernTexture = ModelTexture(loader.loadTexture("fern"))
+    fernTexture.numberOfRows = 2
+    fernTexture.hasTransparency = true
+    fernTexture.shineDamper = 10F
+    fernTexture.reflectivity = 0.4F
+
+    val fernTexturedModel = TexturedModel(fernTexture, fernRawModel)
+    for (i in 1 until 300) {
+        val entityFern = Entity(fernTexturedModel, terrain.getRandomLocation(),
+                0F, 0F, 0F, 0.6F, random.nextInt(4))
+
+        if(i%50 == 0) {
+            val entityGrass = Entity(grassTexturedModel, terrain.getRandomLocation(),
+                    0F, 0F, 0F, 1F)
+            entities.add(entityGrass)
+            val entityLowPolyTree = Entity(lowPolyTreeModel, terrain.getRandomLocation(),
+                    0F, 0F, 0F, 10F)
+            entities.add(entityLowPolyTree)
+        }
+        entities.add(entityFern)
+
+    }
+
+    return entities
+}
+
 fun createTerrainPack(loader: Loader): TerrainTexturePack {
     val backgroundTexture = TerrainTexture(loader.loadTexture("/terrain/textures/grassy2"))
     val rTexture = TerrainTexture(loader.loadTexture("/terrain/textures/mud"))
@@ -62,16 +95,16 @@ fun main(args: Array<String>) {
     DisplayManager.create("ICG Loot Simulator")
     val loader = Loader()
     val renderer = MasterRenderer()
-    val entities = createEntities(loader)
     val terrainPack = createTerrainPack(loader)
 
     // loading terrain [IM]
     val blendMap = TerrainTexture(loader.loadTexture("/terrain/textures/blendMap"))
     val heightMapFileDirectory = "res/terrain/textures/heightmap.png"
     val terrain = Terrain(0F, -1F, loader, terrainPack, blendMap, heightMapFileDirectory)
+    val entities = createEntities(loader, terrain)
 
     val player = loadPlayer(loader)
-    val camera = Camera(player , Vector3f(0F, 50F, 0F))
+    val camera = Camera(player, Vector3f(0F, 50F, 0F))
     val light = Light(position = Vector3f(20000F, 40000F, 20000F),
             color = Vector3f(1F, 1F, 1F))
 
