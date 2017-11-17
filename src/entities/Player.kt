@@ -1,20 +1,23 @@
 package entities
 
 import core.engine.DisplayManager
-import extensions.whenDown
 import models.TexturedModel
 import org.lwjgl.input.Keyboard
-import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector3f
 
 class Player(texturedModel: TexturedModel, position: Vector3f, rotX: Float, rotY: Float, rotZ: Float, scale: Float) : Entity(texturedModel, position, rotX, rotY, rotZ, scale) {
     companion object {
         val RUN_SPEED = 20F
         val TURN_SPEED = 160F // degrees per second [IM]
+        val GRAVITY = -50F
+        val JUMP_POWER = 30F
+        val TERRAIN_HEIGHT = 0F
     }
 
     private var currentSpeed = 0F
     private var currentTurnSpeed = 0F
+    private var upwardsSpeed = 0F
+    private var isInAir = false
 
     fun move() {
         checkInputs()
@@ -25,23 +28,37 @@ class Player(texturedModel: TexturedModel, position: Vector3f, rotX: Float, rotY
         val dx = distance * Math.sin(Math.toRadians(super.rotY.toDouble()))
         val dz = distance * Math.cos(Math.toRadians(super.rotY.toDouble()))
         super.increasePosition(dx.toFloat(), 0F, dz.toFloat())
+        upwardsSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds()
+        super.increasePosition(0F, upwardsSpeed * DisplayManager.getFrameTimeSeconds(), 0F)
+        if(super.position.y < TERRAIN_HEIGHT) {
+            upwardsSpeed = 0F
+            isInAir = false
+            super.position.y = TERRAIN_HEIGHT
+        }
+    }
+
+    private fun jump() {
+        if (!isInAir) {
+            upwardsSpeed = JUMP_POWER
+            isInAir = true
+        }
     }
 
     private fun checkInputs() {
-        if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
-            currentSpeed = RUN_SPEED
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-            currentSpeed = -RUN_SPEED
-        } else {
-            currentSpeed = 0F
+        currentSpeed = when {
+            Keyboard.isKeyDown(Keyboard.KEY_W) -> RUN_SPEED
+            Keyboard.isKeyDown(Keyboard.KEY_S) -> -RUN_SPEED
+            else -> 0F
         }
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-            currentTurnSpeed = -TURN_SPEED
-        } else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-            currentTurnSpeed = TURN_SPEED
-        } else {
-            currentTurnSpeed = 0F
+        currentTurnSpeed = when {
+            Keyboard.isKeyDown(Keyboard.KEY_D) -> -TURN_SPEED
+            Keyboard.isKeyDown(Keyboard.KEY_A) -> TURN_SPEED
+            else -> 0F
+        }
+
+        if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
+            jump()
         }
     }
 }
