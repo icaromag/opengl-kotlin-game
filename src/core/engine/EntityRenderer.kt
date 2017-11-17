@@ -38,10 +38,10 @@ class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
         GL20.glEnableVertexAttribArray(1)
         GL20.glEnableVertexAttribArray(2) // obj normals
         val texture = texturedModel.texture
+        shader.loadNumberOfRows(texture.numberOfRows)
         if (texture.hasTransparency) {
             MasterRenderer.disableCulling()
         }
-        // TODO: fix fake lighting
         shader.loadFakeLightingVariable(texture.useFakeLighting)
         shader.loadShineVariables(texture.shineDamper, texture.reflectivity)
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
@@ -61,5 +61,6 @@ class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
                 entity.position, entity.rotX, entity.rotY, entity.rotZ, entity.scale)
         // load the transform matrix into the shader
         shader.loadTransformationMatrix(transformationMatrix)
+        shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset())
     }
 }

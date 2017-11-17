@@ -4,6 +4,7 @@ import core.engine.DisplayManager
 import models.TexturedModel
 import org.lwjgl.input.Keyboard
 import org.lwjgl.util.vector.Vector3f
+import terrain.Terrain
 
 class Player(texturedModel: TexturedModel, position: Vector3f, rotX: Float, rotY: Float, rotZ: Float, scale: Float) : Entity(texturedModel, position, rotX, rotY, rotZ, scale) {
     companion object {
@@ -11,7 +12,6 @@ class Player(texturedModel: TexturedModel, position: Vector3f, rotX: Float, rotY
         val TURN_SPEED = 160F // degrees per second [IM]
         val GRAVITY = -50F
         val JUMP_POWER = 30F
-        val TERRAIN_HEIGHT = 0F
     }
 
     private var currentSpeed = 0F
@@ -19,7 +19,7 @@ class Player(texturedModel: TexturedModel, position: Vector3f, rotX: Float, rotY
     private var upwardsSpeed = 0F
     private var isInAir = false
 
-    fun move() {
+    fun move(terrain: Terrain) {
         checkInputs()
         // the turn speed should behave by seconds [IM]
         super.increaseRotation(0F, currentTurnSpeed * DisplayManager.getFrameTimeSeconds(), 0F)
@@ -30,10 +30,12 @@ class Player(texturedModel: TexturedModel, position: Vector3f, rotX: Float, rotY
         super.increasePosition(dx.toFloat(), 0F, dz.toFloat())
         upwardsSpeed += GRAVITY * DisplayManager.getFrameTimeSeconds()
         super.increasePosition(0F, upwardsSpeed * DisplayManager.getFrameTimeSeconds(), 0F)
-        if(super.position.y < TERRAIN_HEIGHT) {
+
+        val terrainHeight = terrain.getHeightOfTerrain(super.position.x, super.position.z)
+        if(super.position.y < terrainHeight) {
             upwardsSpeed = 0F
             isInAir = false
-            super.position.y = TERRAIN_HEIGHT
+            super.position.y = terrainHeight
         }
     }
 

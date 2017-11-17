@@ -3,6 +3,7 @@ package shaders
 import entities.Camera
 import entities.Light
 import org.lwjgl.util.vector.Matrix4f
+import org.lwjgl.util.vector.Vector2f
 import org.lwjgl.util.vector.Vector3f
 import utils.Maths
 
@@ -16,6 +17,9 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var reflectivityLocation: Any
     private lateinit var useFakeLightingLocation: Any
     private lateinit var skyColorLocation: Any
+    // texture atlases [IM]
+    private lateinit var numberOfRowsLocation: Any
+    private lateinit var offsetLocation: Any
 
     companion object {
         private val VERTEX_FILE = "src/shaders/glsl/vertexShader"
@@ -38,6 +42,16 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         reflectivityLocation = super.getUniformLocation("reflectivity")
         useFakeLightingLocation = super.getUniformLocation("useFakeLighting")
         skyColorLocation = super.getUniformLocation("skyColor")
+        numberOfRowsLocation = super.getUniformLocation("numberOfRows")
+        offsetLocation = super.getUniformLocation("offset")
+    }
+
+    fun loadNumberOfRows(numberOfRows: Int) {
+        super.loadFloat(numberOfRowsLocation as Int, numberOfRows.toFloat())
+    }
+
+    fun loadOffset(x: Float, y: Float) {
+        super.load2DVector(offsetLocation as Int, Vector2f(x, y))
     }
 
     fun loadSkyColor(r: Float, g: Float, b: Float) {

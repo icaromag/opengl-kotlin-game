@@ -18,14 +18,17 @@ uniform vec3 lightPosition;
 
 uniform float useFakeLighting;
 
-const float density = 0.007;
-const float gradient = 1.5;
+uniform float numberOfRows; // texture atlases
+uniform vec2 offset; // texture atlases
+
+const float density = 0.0035;
+const float gradient = 5.0;
 
 void main(void){
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
     vec4 positionRelativeToCamera = viewMatrix * worldPosition;
 	gl_Position = projectionMatrix * positionRelativeToCamera;
-	passTextureCoordinates = textureCoordinates;
+	passTextureCoordinates = (textureCoordinates / numberOfRows) + offset;
 
 	vec3 actualNormal = normal;
 	if(useFakeLighting > 0.5) {
