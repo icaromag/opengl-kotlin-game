@@ -65,20 +65,19 @@ fun main(args: Array<String>) {
     val entities = createEntities(loader)
     val terrainPack = createTerrainPack(loader)
 
-    // 400 is half 800 (terrain size) [IM]
-    val camera = Camera(Vector3f(0F, 50F, 0F))
-    val light = Light(position = Vector3f(20000F, 40000F, 20000F),
-            color = Vector3f(1F, 1F, 1F))
-
     // loading terrain [IM]
     val blendMap = TerrainTexture(loader.loadTexture("/terrain/textures/blendMap"))
     val terrain1 = Terrain(0F, -1F, loader, terrainPack, blendMap)
     val terrain2 = Terrain(-1F, -1F, loader, terrainPack, blendMap)
 
     val player = loadPlayer(loader)
+    val camera = Camera(player , Vector3f(0F, 50F, 0F))
+    val light = Light(position = Vector3f(20000F, 40000F, 20000F),
+            color = Vector3f(1F, 1F, 1F))
 
     do {
         player.move()
+        camera.move()
         renderer.processEntity(player)
         // terrains [IM]
         renderer.processTerrains(terrain1)

@@ -62,4 +62,3 @@ class Player(texturedModel: TexturedModel, position: Vector3f, rotX: Float, rotY
         }
     }
 }
-
