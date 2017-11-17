@@ -1,7 +1,5 @@
 package entities
 
-import extensions.whenDown
-import org.lwjgl.input.Keyboard
 import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector3f
 
@@ -9,7 +7,7 @@ class Camera(private val player: Player, val position: Vector3f) {
     private var distanceFromPlayer = 50F
     private var angleAroundPlayer = 0F
 
-    var pitch = 45F
+    var pitch = 20F
     var yaw = 0F
     val roll = 0F
 

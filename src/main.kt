@@ -1,6 +1,7 @@
 import core.engine.DisplayManager
 import core.engine.Loader
 import core.engine.MasterRenderer
+import core.engine.TerrainRenderer
 import core.engine.objloader.OBJFileLoader
 import entities.Camera
 import entities.Entity
@@ -23,11 +24,10 @@ fun createEntities(loader: Loader): MutableList<Entity> {
     val grassTexture = ModelTexture(loader.loadTexture("grassTexture"))
     grassTexture.hasTransparency = true
     // TODO fix fake lighting [IM]
-    // grassTexture.useFakeLighting = true
+    grassTexture.useFakeLighting = true
     val grassTexturedModel = TexturedModel(grassTexture, grassRawModel)
     val entityGrass = Entity(grassTexturedModel, Vector3f(0F, 0F, -50F),
-            0F, 0F, 0F, 1F)
-
+            0F, 0F, 0F, 4F)
 
     entities.add(entityGrass)
     return entities
@@ -40,10 +40,10 @@ fun loadPlayer(loader: Loader): Player {
             dragonOBJModelData.vertices, dragonOBJModelData.textureCoords, dragonOBJModelData.normals, dragonOBJModelData.indices)
     // load dragon [IM]
     val entityDragonTexture = ModelTexture(loader.loadTexture("texture"))
-    val texturedModel = TexturedModel(entityDragonTexture, dragonRawModel)
     // configure specular lighting factors [IM]
-    entityDragonTexture.shineDamper = 10F
-    entityDragonTexture.reflectivity = 1F
+    entityDragonTexture.shineDamper = 5F
+    entityDragonTexture.reflectivity = 3F
+    val texturedModel = TexturedModel(entityDragonTexture, dragonRawModel)
 
     return Player(texturedModel, Vector3f(0F, 0F, -50F),
             0F, 0F, 0F, 1F)

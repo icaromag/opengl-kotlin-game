@@ -2,19 +2,21 @@ package core.engine
 
 import entities.Entity
 import models.TexturedModel
-import org.lwjgl.opengl.*
+import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL13
+import org.lwjgl.opengl.GL20
+import org.lwjgl.opengl.GL30
 import org.lwjgl.util.vector.Matrix4f
 import shaders.StaticShader
 import utils.Maths
 
-
 class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
-    var shader: StaticShader = staticShader
+    private var shader: StaticShader = staticShader
 
     init {
-        staticShader.start()
-        staticShader.loadProjectionMatrix(projectionMatrix)
-        staticShader.stop()
+        shader.start()
+        shader.loadProjectionMatrix(projectionMatrix)
+        shader.stop()
     }
 
     fun render(entities: Map<TexturedModel, List<Entity>>) {
@@ -36,11 +38,11 @@ class EntityRenderer(staticShader: StaticShader, projectionMatrix: Matrix4f) {
         GL20.glEnableVertexAttribArray(1)
         GL20.glEnableVertexAttribArray(2) // obj normals
         val texture = texturedModel.texture
-        if(texture.hasTransparency) {
+        if (texture.hasTransparency) {
             MasterRenderer.disableCulling()
         }
-        // TODO fix this fake lighting piece [IM]
-        // shader.loadFakeLightingVariable(texture.useFakeLighting)
+        // TODO: fix fake lighting
+        shader.loadFakeLightingVariable(texture.useFakeLighting)
         shader.loadShineVariables(texture.shineDamper, texture.reflectivity)
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glBindTexture(GL11.GL_TEXTURE_2D, texturedModel.texture.textureID)
