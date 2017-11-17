@@ -45,8 +45,8 @@ fun loadPlayer(loader: Loader): Player {
     entityDragonTexture.reflectivity = 3F
     val texturedModel = TexturedModel(entityDragonTexture, dragonRawModel)
 
-    return Player(texturedModel, Vector3f(0F, 0F, -50F),
-            0F, 0F, 0F, 1F)
+    return Player(texturedModel, Vector3f(100F, 5F, -150F),
+            0F, 180F, 0F, 0.6F)
 }
 
 fun createTerrainPack(loader: Loader): TerrainTexturePack {
@@ -68,8 +68,7 @@ fun main(args: Array<String>) {
     // loading terrain [IM]
     val blendMap = TerrainTexture(loader.loadTexture("/terrain/textures/blendMap"))
     val heightMapFileDirectory = "res/terrain/textures/heightmap.png"
-    val terrain1 = Terrain(0F, -1F, loader, terrainPack, blendMap, heightMapFileDirectory)
-    val terrain2 = Terrain(-1F, -1F, loader, terrainPack, blendMap, heightMapFileDirectory)
+    val terrain = Terrain(0F, -1F, loader, terrainPack, blendMap, heightMapFileDirectory)
 
     val player = loadPlayer(loader)
     val camera = Camera(player , Vector3f(0F, 50F, 0F))
@@ -77,12 +76,11 @@ fun main(args: Array<String>) {
             color = Vector3f(1F, 1F, 1F))
 
     do {
-        player.move()
+        player.move(terrain)
         camera.move()
         renderer.processEntity(player)
         // terrains [IM]
-        renderer.processTerrains(terrain1)
-        renderer.processTerrains(terrain2)
+        renderer.processTerrains(terrain)
         // entities [IM]
         entities.forEach { renderer.processEntity(it) }
         renderer.render(light, camera)
