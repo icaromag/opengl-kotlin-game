@@ -67,8 +67,9 @@ fun main(args: Array<String>) {
 
     // loading terrain [IM]
     val blendMap = TerrainTexture(loader.loadTexture("/terrain/textures/blendMap"))
-    val terrain1 = Terrain(0F, -1F, loader, terrainPack, blendMap)
-    val terrain2 = Terrain(-1F, -1F, loader, terrainPack, blendMap)
+    val heightMapFileDirectory = "res/terrain/textures/heightmap.png"
+    val terrain1 = Terrain(0F, -1F, loader, terrainPack, blendMap, heightMapFileDirectory)
+    val terrain2 = Terrain(-1F, -1F, loader, terrainPack, blendMap, heightMapFileDirectory)
 
     val player = loadPlayer(loader)
     val camera = Camera(player , Vector3f(0F, 50F, 0F))
