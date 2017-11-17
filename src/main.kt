@@ -5,6 +5,7 @@ import core.engine.objloader.OBJFileLoader
 import entities.Camera
 import entities.Entity
 import entities.Light
+import entities.Player
 import models.TexturedModel
 import org.lwjgl.opengl.Display
 import org.lwjgl.util.vector.Vector3f
@@ -24,9 +25,15 @@ fun createEntities(loader: Loader): MutableList<Entity> {
     // TODO fix fake lighting [IM]
     // grassTexture.useFakeLighting = true
     val grassTexturedModel = TexturedModel(grassTexture, grassRawModel)
-    val entityGrass = Entity(grassTexturedModel, Vector3f(400F, 0F, 380F),
-            0F, 0F, 0F, 2F)
+    val entityGrass = Entity(grassTexturedModel, Vector3f(0F, 0F, -50F),
+            0F, 0F, 0F, 1F)
 
+
+    entities.add(entityGrass)
+    return entities
+}
+
+fun loadPlayer(loader: Loader): Player {
     // dragon
     val dragonOBJModelData = OBJFileLoader.loadOBJ("dragon")
     val dragonRawModel = loader.loadToVAO(
@@ -37,12 +44,9 @@ fun createEntities(loader: Loader): MutableList<Entity> {
     // configure specular lighting factors [IM]
     entityDragonTexture.shineDamper = 10F
     entityDragonTexture.reflectivity = 1F
-    val entityDragon = Entity(texturedModel, Vector3f(400F, 0F, 380F),
-            0F, 0F, 0F, 1F)
 
-    entities.add(entityDragon)
-    entities.add(entityGrass)
-    return entities
+    return Player(texturedModel, Vector3f(0F, 0F, -50F),
+            0F, 0F, 0F, 1F)
 }
 
 fun createTerrainPack(loader: Loader): TerrainTexturePack {
@@ -71,13 +75,16 @@ fun main(args: Array<String>) {
     val terrain1 = Terrain(0F, -1F, loader, terrainPack, blendMap)
     val terrain2 = Terrain(-1F, -1F, loader, terrainPack, blendMap)
 
+    val player = loadPlayer(loader)
+
     do {
-        camera.move()
+        player.move()
+        renderer.processEntity(player)
         // terrains [IM]
         renderer.processTerrains(terrain1)
         renderer.processTerrains(terrain2)
         // entities [IM]
-//        entities.forEach { renderer.processEntity(it) }
+        entities.forEach { renderer.processEntity(it) }
         renderer.render(light, camera)
         // loading 1 time per frame gives us the option
         //   to move the light and the camera during the
