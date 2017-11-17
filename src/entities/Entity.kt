@@ -6,10 +6,10 @@ import org.lwjgl.util.vector.Vector3f
 /**
  * Should represent an instance of a textured model.
  * Contains the textured model, its position, scale and some
- *  data that belongs to the model itself.
+ *  data that belongs to the model itself. [IM]
  */
-class Entity(val texturedModel: TexturedModel, val position: Vector3f,
-             var rotX: Float, var rotY: Float, var rotZ: Float, val scale: Float) {
+open class Entity(val texturedModel: TexturedModel, val position: Vector3f,
+                  var rotX: Float, var rotY: Float, var rotZ: Float, val scale: Float) {
 
     fun increasePosition(dx: Float, dy: Float, dz: Float) =
             position.apply {

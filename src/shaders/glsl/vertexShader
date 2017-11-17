@@ -35,6 +35,7 @@ void main(void){
 
 	surfaceNormal = (transformationMatrix * vec4(actualNormal, 0.0)).xyz;
 	toLightVector = lightPosition - worldPosition.xyz;
+
 	// invert the negative camera position and turn into a 4d vector [IM]
 	// we get the position by subtracting the worldPosition [IM]
 	toCameraVector = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;

@@ -50,7 +50,7 @@ abstract class ShaderProgram(vertexFile: String, fragmentFile: String) {
     }
 
     protected fun loadBoolean(location: Int, value: Boolean) {
-        val toLoad = if (value) 0F else 1F
+        val toLoad = if (value) 1F else 0F
         GL20.glUniform1f(location, toLoad)
     }
 
