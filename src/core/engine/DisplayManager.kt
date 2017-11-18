@@ -6,7 +6,7 @@ import org.lwjgl.opengl.*
 object DisplayManager {
 
     private val WIDTH = 1280
-    private val HEIGHT = 720
+    private val HEIGHT = 1280
     private val FPS_CAP = 120
     private var lastFrameTime: Long = 0
     private var delta: Float = 0F
