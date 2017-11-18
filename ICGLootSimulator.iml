@@ -12,5 +12,6 @@
     <orderEntry type="library" name="lwjgl_util" level="project" />
     <orderEntry type="library" name="slick-util" level="project" />
     <orderEntry type="library" name="slick-util" level="project" />
+    <orderEntry type="library" name="PNGDecoder" level="project" />
   </component>
 </module>
