@@ -4,10 +4,10 @@ import org.lwjgl.input.Mouse
 import org.lwjgl.util.vector.Vector3f
 
 class Camera(private val player: Player, val position: Vector3f) {
-    private var distanceFromPlayer = 50F
+    private var distanceFromPlayer = 80F
     private var angleAroundPlayer = 0F
 
-    var pitch = 20F
+    var pitch = 25F
     var yaw = 0F
     val roll = 0F
 

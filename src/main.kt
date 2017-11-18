@@ -19,18 +19,18 @@ val random = Random()
 
 fun loadPlayer(loader: Loader): Player {
     // dragon
-    val dragonOBJModelData = OBJFileLoader.loadOBJ("dragon")
+    val dragonOBJModelData = OBJFileLoader.loadOBJ("player")
     val dragonRawModel = loader.loadToVAO(
             dragonOBJModelData.vertices, dragonOBJModelData.textureCoords, dragonOBJModelData.normals, dragonOBJModelData.indices)
     // load dragon [IM]
-    val entityDragonTexture = ModelTexture(loader.loadTexture("texture"))
+    val entityDragonTexture = ModelTexture(loader.loadTexture("player"))
     // configure specular lighting factors [IM]
     entityDragonTexture.shineDamper = 5F
     entityDragonTexture.reflectivity = 3F
     val texturedModel = TexturedModel(entityDragonTexture, dragonRawModel)
 
     return Player(texturedModel, Vector3f(153F, 5F, -274F),
-            0F, 100F, 0F, 0.6F)
+            0F, 100F, 0F, 1F)
 }
 
 fun createEntities(entities: MutableList<Entity>, loader: Loader, terrain: Terrain) {

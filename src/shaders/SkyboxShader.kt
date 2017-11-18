@@ -28,6 +28,10 @@ class SkyboxShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
 
     fun loadViewMatrix(camera: Camera) {
         val viewMatrix = Maths.createViewMatrix(camera)
+        // modify the view matrix to follow the camera before load it [IM]
+        viewMatrix.m30 = 0F
+        viewMatrix.m31 = 0F
+        viewMatrix.m32 = 0F
         super.loadMatrix(viewMatrixLocation as Int, viewMatrix)
     }
 }
