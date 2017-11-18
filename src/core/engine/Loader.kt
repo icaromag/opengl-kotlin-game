@@ -3,8 +3,11 @@ package core.engine
 import models.RawModel
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
+import org.newdawn.slick.opengl.PNGDecoder
 import org.newdawn.slick.opengl.TextureLoader
+import textures.TextureData
 import java.io.FileInputStream
+import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
@@ -21,6 +24,13 @@ class Loader {
         storeDataInAttributeList(2, 3, normals)
         unbindVAO()
         return RawModel(vaoId, indices.size)
+    }
+
+    fun loadToVAO(positions: FloatArray, dimensions: Int): RawModel {
+        val vaoId = createVAO()
+        this.storeDataInAttributeList(0, dimensions, positions)
+        unbindVAO()
+        return RawModel(vaoId, positions.size / dimensions)
     }
 
     fun loadTexture(fileName: String): Int {
@@ -79,11 +89,43 @@ class Loader {
         return intBuffer
     }
 
+    fun loadCubeMap(textureFiles: List<String>): Int {
+        val textureID = GL11.glGenTextures()
+        GL13.glActiveTexture(GL13.GL_TEXTURE0)
+        GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureID)
+
+        textureFiles.forEachIndexed { index, fileName ->
+
+            val data = decodeTextureFile("res/$fileName.png")
+            // the first param is which face of the cube we want to load
+            //   the texture into [IM]
+            GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + index, 0, GL11.GL_RGBA, data.width, data.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data.buffer)
+        }
+        // set mag and min filter to make the textures appear smooth like
+        //   in the mipmap implementation [IM]
+        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR)
+        GL11.glTexParameteri(GL13.GL_TEXTURE_CUBE_MAP, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR)
+        textures.add(textureID)
+        return textureID
+    }
+
     private fun storeDataInFloatBuffer(data: FloatArray): FloatBuffer {
         val floatBuffer: FloatBuffer = BufferUtils.createFloatBuffer(data.size)
         floatBuffer.put(data)
         // tells that the data insertion is finished. Ready to go!
         floatBuffer.flip()
         return floatBuffer
+    }
+
+    private fun decodeTextureFile(fileName: String): TextureData {
+        val inputStream = FileInputStream(fileName)
+        val decoder = PNGDecoder(inputStream)
+        val width = decoder.width
+        val height = decoder.height
+        val buffer = ByteBuffer.allocateDirect(4 * width * height)
+        decoder.decode(buffer, width * 4, PNGDecoder.RGBA)
+        buffer.flip()
+        inputStream.close()
+        return TextureData(width, height, buffer)
     }
 }
