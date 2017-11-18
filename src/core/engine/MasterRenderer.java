@@ -64,7 +64,7 @@ public class MasterRenderer {
         terrainShader.start();
         terrainShader.loadSkyColor(RED, GREEN, BLUE);
         // TODO fix multiple light sources for terrain [IM]
-        terrainShader.loadLight(lights.get(0));
+        terrainShader.loadLights(lights);
         terrainShader.loadViewMatrix(camera);
         terrainRenderer.render(terrains);
         terrainShader.stop();

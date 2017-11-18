@@ -35,12 +35,11 @@ void main(void){
         // should be greater than 0 [IM]
         specularFactor = max(specularFactor, 0.0);
         float dampedFactor = pow(specularFactor, shineDamper);
-        totalDiffuse = totalDiffuse + brightness * lightColor[i];
-        totalSpecular = totalSpecular + dampedFactor * reflectivity * lightColor[i];
+        totalDiffuse += brightness * lightColor[i];
+        totalSpecular += dampedFactor * reflectivity * lightColor[i];
     }
     // The ambient lighting was moved to here [IM]
     totalDiffuse = max(totalDiffuse, 0.2);
-
 
     // transparency [IM]
     vec4 textureColor = texture(modelTexture,  passTextureCoordinates);

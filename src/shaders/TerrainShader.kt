@@ -10,8 +10,8 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var transformationMatrixLocation: Any
     private lateinit var projectionMatrixLocation: Any
     private lateinit var viewMatrixLocation: Any
-    private lateinit var lightPositionLocation: Any
-    private lateinit var lightColorLocation: Any
+    private lateinit var lightPositionLocation: MutableList<Any>
+    private lateinit var lightColorLocation: MutableList<Any>
     private lateinit var shineDamperLocation: Any
     private lateinit var reflectivityLocation: Any
     private lateinit var skyColorLocation: Any
@@ -24,6 +24,7 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
 
 
     companion object {
+        val MAX_LIGHTS = 4
         private val VERTEX_FILE = "src/shaders/glsl/terrainVertexShader"
         private val FRAGMENT_FILE = "src/shaders/glsl/terrainFragmentShader"
     }
@@ -38,8 +39,6 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         transformationMatrixLocation = super.getUniformLocation("transformationMatrix")
         projectionMatrixLocation = super.getUniformLocation("projectionMatrix")
         viewMatrixLocation = super.getUniformLocation("viewMatrix")
-        lightPositionLocation = super.getUniformLocation("lightPosition")
-        lightColorLocation = super.getUniformLocation("lightColor")
         shineDamperLocation = super.getUniformLocation("shineDamper")
         reflectivityLocation = super.getUniformLocation("reflectivity")
         skyColorLocation = super.getUniformLocation("skyColor")
@@ -49,6 +48,14 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         gTextureLocation = super.getUniformLocation("gTexture")
         bTextureLocation = super.getUniformLocation("bTexture")
         blendMapLocation = super.getUniformLocation("blendMap")
+
+        // multiple lights [IM]
+        lightPositionLocation = MutableList(MAX_LIGHTS, {})
+        lightColorLocation = MutableList(MAX_LIGHTS, {})
+        for (i in 0 until MAX_LIGHTS) {
+            lightPositionLocation[i] = super.getUniformLocation("lightPosition[$i]")
+            lightColorLocation[i] = super.getUniformLocation("lightColor[$i]")
+        }
     }
 
     fun connectTextureUnits() {
@@ -72,9 +79,16 @@ class TerrainShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         super.loadMatrix(transformationMatrixLocation as Int, matrix)
     }
 
-    fun loadLight(light: Light) {
-        super.loadVector(lightPositionLocation as Int, light.position)
-        super.loadVector(lightColorLocation as Int, light.color)
+    fun loadLights(lights: MutableList<Light>) {
+        for (i in 0 until MAX_LIGHTS) {
+            if (i < lights.size) {
+                super.loadVector(lightPositionLocation[i] as Int, lights[i].position)
+                super.loadVector(lightColorLocation[i] as Int, lights[i].color)
+            } else {
+                super.loadVector(lightPositionLocation[i] as Int, Vector3f(0F, 0F, 0F))
+                super.loadVector(lightColorLocation[i] as Int, Vector3f(0F, 0F, 0F))
+            }
+        }
     }
 
     fun loadProjectionMatrix(matrix: Matrix4f) {

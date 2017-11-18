@@ -81,7 +81,7 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
 
     fun loadLights(lights: MutableList<Light>) {
         for (i in 0 until MAX_LIGHTS) {
-            if(i < lights.size) {
+            if (i < lights.size) {
                 super.loadVector(lightPositionLocation[i] as Int, lights[i].position)
                 super.loadVector(lightColorLocation[i] as Int, lights[i].color)
             } else {
