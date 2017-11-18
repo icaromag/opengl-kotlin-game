@@ -1,7 +1,6 @@
 import core.engine.DisplayManager
 import core.engine.Loader
 import core.engine.MasterRenderer
-import core.engine.TerrainRenderer
 import core.engine.objloader.OBJFileLoader
 import entities.Camera
 import entities.Entity
@@ -50,19 +49,6 @@ fun createEntities(entities: MutableList<Entity>, loader: Loader, terrain: Terra
     pineTexture.reflectivity = 0.4F
     val pineModel = TexturedModel(pineTexture, pineRawModel)
 
-    // low poly tree
-    val lowPolyTreeOBJModelData = OBJFileLoader.loadOBJ("tree")
-    val lowPolyTreeTexture = ModelTexture(loader.loadTexture("tree"))
-    val lowPolyTreeRawModel = loader.loadToVAO(
-            lowPolyTreeOBJModelData.vertices,
-            lowPolyTreeOBJModelData.textureCoords,
-            lowPolyTreeOBJModelData.normals,
-            lowPolyTreeOBJModelData.indices
-    )
-    lowPolyTreeTexture.shineDamper = 10F
-    lowPolyTreeTexture.reflectivity = 0.4F
-    val lowPolyTreeModel = TexturedModel(lowPolyTreeTexture, lowPolyTreeRawModel)
-
     // grass
     val grassOBJModelData = OBJFileLoader.loadOBJ("grassModel")
     val grassTexture = ModelTexture(loader.loadTexture("grassTexture"))
@@ -91,21 +77,17 @@ fun createEntities(entities: MutableList<Entity>, loader: Loader, terrain: Terra
     fernTexture.reflectivity = 0.4F
     val fernTexturedModel = TexturedModel(fernTexture, fernRawModel)
 
-    for (i in 1 until 300) {
+    for (i in 1 until 20) {
         val entityFern = Entity(fernTexturedModel, terrain.getRandomLocation(),
                 0F, 0F, 0F, 0.6F, random.nextInt(4))
-        if (i % 50 == 0) {
-            val entityGrass = Entity(grassTexturedModel, terrain.getRandomLocation(),
-                    0F, 0F, 0F, 1F)
-            entities.add(entityGrass)
-            val entityLowPolyTree = Entity(lowPolyTreeModel, terrain.getRandomLocation(),
-                    0F, 0F, 0F, 10F)
-            entities.add(entityLowPolyTree)
-            val pine = Entity(pineModel, terrain.getRandomLocation(),
-                    0F, 0F, 0F, 5F)
-            entities.add(pine)
-        }
         entities.add(entityFern)
+        val entityGrass = Entity(grassTexturedModel, terrain.getRandomLocation(),
+                0F, 0F, 0F, 1F)
+        entities.add(entityGrass)
+
+        val pine = Entity(pineModel, terrain.getRandomLocation(),
+                0F, 0F, 0F, 3F)
+        entities.add(pine)
     }
 }
 
@@ -122,34 +104,10 @@ fun createLights(entities: MutableList<Entity>, lights: MutableList<Light>, load
             lightPost.normals,
             lightPost.indices
     )
-//    lightPostTexture.shineDamper = 10F
-//    lightPostTexture.reflectivity = 0.4F
+
     val lightPostModel = TexturedModel(lightPostTexture, lightPostRawModel)
-
-    // default light [IM]
-//    lights.add(Light(
-//            position = Vector3f(0F, 1000F, -7000F),
-//            color = Vector3f(0.4F, 0.4F, 0.4F)))
-
-    // point lights [IM]
-//    val pos1 = Vector3f(185F, 10F, -293F)
-//    pos1.y = terrain.getHeightOfTerrain(pos1.x, pos1.z)
-//    lights.add(Light(
-//            position = pos1,
-//            color = Vector3f(1F, 0F, 0F),
-//            attenuation = Vector3f(1F, 0.01F, 0.002F))
-//    )
-//    entities.add(Entity(lightPostModel, pos1, 0F, 0F, 0F, 1F))
-//
-//    val pos2 = Vector3f(350F, 10F, -300F)
-//    lights.add(Light(
-//            position = pos2,
-//            color = Vector3f(1F, 1F, 1F),
-//            attenuation = Vector3f(1F, 1F, 1F))
-//    )
-//    pos2.y = terrain.getHeightOfTerrain(pos2.x, pos2.z)
-//    entities.add(Entity(lightPostModel, pos2, 0F, 0F, 0F, 1F))
     val positions = mutableListOf<Vector3f>(Vector3f(153F, 0F, -250F), Vector3f(230F, 0F, -150F))
+
     positions.forEach {
         pos = it
         entity = Entity(
@@ -160,7 +118,7 @@ fun createLights(entities: MutableList<Entity>, lights: MutableList<Light>, load
         light = Light(
                 position = Vector3f(pos.x, entity.position.y + 7, pos.z),
                 color = Vector3f(1F, 1F, 1F),
-                attenuation = Vector3f(0.01F, 0.01F, 0.0001F))
+                attenuation = Vector3f(0.01F, 0.01F, 0.001F))
         entities.add(entity)
         lights.add(light)
     }
@@ -179,7 +137,7 @@ fun createTerrainPack(loader: Loader): TerrainTexturePack {
 fun main(args: Array<String>) {
     DisplayManager.create("ICG Loot Simulator")
     val loader = Loader()
-    val renderer = MasterRenderer()
+    val renderer = MasterRenderer(loader)
     val terrainPack = createTerrainPack(loader)
 
     // loading terrain [IM]

@@ -26,6 +26,13 @@ class Loader {
         return RawModel(vaoId, indices.size)
     }
 
+    fun loadToVAO(positions: FloatArray, dimensions: Int): RawModel {
+        val vaoId = createVAO()
+        this.storeDataInAttributeList(0, dimensions, positions)
+        unbindVAO()
+        return RawModel(vaoId, positions.size / dimensions)
+    }
+
     fun loadTexture(fileName: String): Int {
         val texture = TextureLoader.getTexture("PNG", FileInputStream("res/$fileName.png"))
         GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
@@ -82,15 +89,17 @@ class Loader {
         return intBuffer
     }
 
-    fun loadCubeMap(textureFile: MutableList<String>): Int {
+    fun loadCubeMap(textureFiles: List<String>): Int {
         val textureID = GL11.glGenTextures()
         GL13.glActiveTexture(GL13.GL_TEXTURE0)
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, textureID)
-        textureFile.forEach {
-            val data = decodeTextureFile("res/$it.png")
+
+        textureFiles.forEachIndexed { index, fileName ->
+
+            val data = decodeTextureFile("res/$fileName.png")
             // the first param is which face of the cube we want to load
             //   the texture into [IM]
-            GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + 1, 0, GL11.GL_RGBA, data.width, data.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data.buffer)
+            GL11.glTexImage2D(GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X + index, 0, GL11.GL_RGBA, data.width, data.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, data.buffer)
         }
         // set mag and min filter to make the textures appear smooth like
         //   in the mipmap implementation [IM]
