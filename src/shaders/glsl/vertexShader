@@ -6,7 +6,8 @@ in vec3 normal;
 
 out vec2 passTextureCoordinates;
 out vec3 surfaceNormal;
-out vec3 toLightVector;
+out vec3 toLightVector[4]; // now we are working with 4 light sources instead of 1 [IM]
+
 // specular lighting vars [IM]
 out vec3 toCameraVector;
 out float visibility;
@@ -14,7 +15,7 @@ out float visibility;
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
-uniform vec3 lightPosition;
+uniform vec3 lightPosition[4];
 
 uniform float useFakeLighting;
 
@@ -37,7 +38,9 @@ void main(void){
     }
 
 	surfaceNormal = (transformationMatrix * vec4(actualNormal, 0.0)).xyz;
-	toLightVector = lightPosition - worldPosition.xyz;
+	for (int i = 0; i < 4; i++) {
+	    toLightVector[i] = lightPosition[i] - worldPosition.xyz;
+	}
 
 	// invert the negative camera position and turn into a 4d vector [IM]
 	// we get the position by subtracting the worldPosition [IM]
