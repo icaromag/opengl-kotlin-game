@@ -105,8 +105,21 @@ fun main(args: Array<String>) {
 
     val player = loadPlayer(loader)
     val camera = Camera(player, Vector3f(0F, 50F, 0F))
-    val light = Light(position = Vector3f(20000F, 40000F, 20000F),
+
+    // multiple lights [IM]
+    val light1 = Light(position = Vector3f(80F, 5F, -150F),
+            color = Vector3f(0F, 0F, 10F))
+    val light2 = Light(position = Vector3f(120F, 5F, -150F),
+            color = Vector3f(10F, 0F, 0F))
+    val light3 = Light(position = Vector3f(100F, 5F, -130F),
+            color = Vector3f(10F, 10F, 0F))
+    val light4 = Light(position = Vector3f(100F, 5F, -170F),
             color = Vector3f(1F, 1F, 1F))
+    val lights = mutableListOf<Light>()
+    lights.add(light1)
+    lights.add(light2)
+    lights.add(light3)
+    lights.add(light4)
 
     do {
         player.move(terrain)
@@ -116,7 +129,7 @@ fun main(args: Array<String>) {
         renderer.processTerrains(terrain)
         // entities [IM]
         entities.forEach { renderer.processEntity(it) }
-        renderer.render(light, camera)
+        renderer.render(lights, camera)
         // loading 1 time per frame gives us the option
         //   to move the light and the camera during the
         //   game loop [IM]
