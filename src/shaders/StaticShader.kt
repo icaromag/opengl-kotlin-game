@@ -13,6 +13,7 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     private lateinit var viewMatrixLocation: Any
     private lateinit var lightPositionLocation: MutableList<Any>
     private lateinit var lightColorLocation: MutableList<Any>
+    private lateinit var attenuationLocation: MutableList<Any>
     private lateinit var shineDamperLocation: Any
     private lateinit var reflectivityLocation: Any
     private lateinit var useFakeLightingLocation: Any
@@ -20,6 +21,7 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
     // texture atlases [IM]
     private lateinit var numberOfRowsLocation: Any
     private lateinit var offsetLocation: Any
+
 
     companion object {
         // this val is hardcoded to match the vertex and fragment shaders [IM]
@@ -48,9 +50,11 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
         // multiple lights [IM]
         lightPositionLocation = MutableList(MAX_LIGHTS, {})
         lightColorLocation = MutableList(MAX_LIGHTS, {})
+        attenuationLocation = MutableList(MAX_LIGHTS, {})
         for (i in 0 until MAX_LIGHTS) {
             lightPositionLocation[i] = super.getUniformLocation("lightPosition[$i]")
             lightColorLocation[i] = super.getUniformLocation("lightColor[$i]")
+            attenuationLocation[i] = super.getUniformLocation("attenuation[$i]")
         }
     }
 
@@ -84,9 +88,11 @@ class StaticShader : ShaderProgram(VERTEX_FILE, FRAGMENT_FILE) {
             if (i < lights.size) {
                 super.loadVector(lightPositionLocation[i] as Int, lights[i].position)
                 super.loadVector(lightColorLocation[i] as Int, lights[i].color)
+                super.loadVector(attenuationLocation[i] as Int, lights[i].attenuation)
             } else {
                 super.loadVector(lightPositionLocation[i] as Int, Vector3f(0F, 0F, 0F))
                 super.loadVector(lightColorLocation[i] as Int, Vector3f(0F, 0F, 0F))
+                super.loadVector(attenuationLocation[i] as Int, Vector3f(1F, 0F, 0F))
             }
         }
     }
